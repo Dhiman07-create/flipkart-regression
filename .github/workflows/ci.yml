@@ -1,21 +1,14 @@
 name: Flipkart Regression CI
 
 on:
-  push:
-    branches:
-      - main
-  pull_request:
-    branches:
-      - main
   workflow_dispatch:
     inputs:
       MAVEN_COMMAND:
-        description: "Maven command to run"
+        description: "Maven command (e.g. mvn clean test -DsuiteXmlFile=testng.xml)"
         required: false
-        default: "mvn clean test -DsuiteXmlFile=testng.xml"
-  
+        default: "mvn clean test"
   schedule:
-    - cron: "0 2 * * *"   # runs daily at 2:00 UTC
+    - cron: "0 2 * * *" # every day at 2AM UTC
 
 jobs:
   test:
@@ -36,7 +29,7 @@ jobs:
           distribution: 'temurin'
 
       - name: Setup Chrome
-        uses: browser-actions/setup-chrome@latest
+        uses: browser-actions/setup-chrome@v1
 
       - name: Cache Maven Packages
         uses: actions/cache@v3
@@ -44,11 +37,15 @@ jobs:
           path: ~/.m2/repository
           key: ${{ runner.os }}-maven-${{ hashFiles('**/pom.xml') }}
 
-      - name: Run Tests with Maven
+      - name: Run Tests with Maven (with retry)
         run: |
-          ${{inputs.MAVEN_COMMAND}}
+          set -e
+          for i in 1 2 3; do
+            echo "Attempt #$i"
+            ${{ github.event.inputs.MAVEN_COMMAND || 'mvn clean test' }} && break || sleep 10
+          done
 
-      - name: Generate Allure report
+      - name: Generate Allure Report
         if: always()
         run: |
           sudo apt-get update && sudo apt-get install -y unzip wget
@@ -56,16 +53,50 @@ jobs:
           unzip -q /tmp/allure.zip -d /tmp/
           /tmp/allure-2.22.1/bin/allure generate target/allure-results -o target/allure-report || true
 
+      - name: Upload Allure Report as Artifact
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: allure-report
+          path: target/allure-report
+
       - name: Deploy Allure report to GitHub Pages
         if: always()
         uses: peaceiris/actions-gh-pages@v3
         with:
           github_token: ${{ secrets.GITHUB_TOKEN }}
           publish_dir: ./target/allure-report
-          publish_branch: gh-pages   # explicitly publish to gh-pages branch
+          destination_dir: ${{ github.run_number }}
 
-      - name: Send notification email (via action)
-        if: always()
+  send-email:
+    needs: test
+    runs-on: ubuntu-latest
+    if: always()
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v3
+
+      - name: Prepare Email Content
+        id: prep
+        run: |
+          REPORT_URL="https://${{ github.repository_owner }}.github.io/${{ github.event.repository.name }}/${{ github.run_number }}/"
+          echo "REPORT_URL=$REPORT_URL" >> $GITHUB_ENV
+
+          STATUS="${{ needs.test.result }}"
+          if [ "$STATUS" = "success" ]; then
+            COLOR="green"
+          else
+            COLOR="red"
+          fi
+
+          cat <<EOF > email.html
+          <h2>Flipkart Regression - Run #${{ github.run_number }}</h2>
+          <p>Status: <b style="color:$COLOR">$STATUS</b></p>
+          <p>Allure Report: <a href="$REPORT_URL">$REPORT_URL</a></p>
+          <p>GitHub Run: <a href="${{ github.server_url }}/${{ github.repository }}/actions/runs/${{ github.run_id }}">${{ github.server_url }}/${{ github.repository }}/actions/runs/${{ github.run_id }}</a></p>
+          EOF
+
+      - name: Send notification email
         uses: dawidd6/action-send-mail@v3
         with:
           server_address: ${{ secrets.SMTP_HOST }}
@@ -73,13 +104,16 @@ jobs:
           username: ${{ secrets.SMTP_USERNAME }}
           password: ${{ secrets.SMTP_PASSWORD }}
           subject: "Flipkart Regression - Run #${{ github.run_number }}"
-          body: |
-            Flipkart regression run completed.
-
-            ✅ Repo: ${{ github.repository }}
-            ✅ Run: ${{ github.server_url }}/${{ github.repository }}/actions/runs/${{ github.run_id }}
-            ✅ Report: View the Allure Report here: https://${{ github.repository_owner }}.github.io/${{ github.repository }}/
-
-            The Allure report is available as an artifact in this run.
           to: ${{ secrets.REPORT_TO }}
           from: ${{ secrets.SMTP_USERNAME }}
+          html_body: file://email.html
+
+  cleanup:
+    needs: [test, send-email]
+    runs-on: ubuntu-latest
+    if: always()
+    steps:
+      - name: Cleanup workspace
+        run: |
+          echo "Cleaning up workspace..."
+          rm -rf ${{ github.workspace }}
