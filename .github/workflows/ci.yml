@@ -145,13 +145,13 @@ jobs:
               </div>
 
               <div style="background:#fff;padding:15px;border:1px solid #ddd;border-radius:8px;">
-                <p><b>Total Scenarios:</b> ${{ env.TOTAL_SCENARIOS || 0 }}</p>
-                <p>✅ <b>Passed:</b> ${{ env.PASSED || 0 }}</p>
-                <p>❌ <b>Failed:</b> ${{ env.FAILED || 0 }}</p>
-                <p>⏸️ <b>Skipped:</b> ${{ env.SKIPPED || 0 }}</p>
-                <p>🐛 <b>Broken:</b> ${{ env.BROKEN || 0 }}</p>
-                <p>🌐 <b>Environment:</b> ${{ inputs.ENV || 'DEV' }}</p>
-                <p>🕒 <b>Test Duration:</b> ${{ env.DURATION || 'N/A' }}</p>
+                <p><b>Total Scenarios:</b> $TOTAL_SCENARIOS</p>
+                <p>✅ <b>Passed:</b> $PASSED</p>
+                <p>❌ <b>Failed:</b> $FAILED</p>
+                <p>⏸️ <b>Skipped:</b> $SKIPPED</p>
+                <p>🐛 <b>Broken:</b> $BROKEN</p>
+                <p>🌐 <b>Environment:</b> ${ENVIRONMENT:-DEV}</p>
+                <p>🕒 <b>Test Duration:</b> $DURATION</p>
               </div>
             </div>
 
@@ -173,6 +173,15 @@ jobs:
           echo "EMAIL_BODY<<EOF" >> $GITHUB_ENV
           echo "$EMAIL_BODY" >> $GITHUB_ENV
           echo "EOF" >> $GITHUB_ENV
+          
+          env:
+          PASSED: ${{ env.PASSED }}
+          FAILED: ${{ env.FAILED }}
+          SKIPPED: ${{ env.SKIPPED }}
+          BROKEN: ${{ env.BROKEN }}
+          TOTAL_SCENARIOS: ${{ env.TOTAL_SCENARIOS }}
+          DURATION: ${{ env.DURATION }}
+          ENVIRONMENT: ${{ inputs.ENV }}
 
       - name: Send notification email
         uses: dawidd6/action-send-mail@v3
