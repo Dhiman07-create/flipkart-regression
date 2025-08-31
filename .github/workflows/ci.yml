@@ -77,25 +77,65 @@ jobs:
       - name: Checkout
         uses: actions/checkout@v3
 
-      - name: Prepare Email Content
-        id: prep
+      - name: Generate Email Body
+        id: generate-email-body
         run: |
           REPORT_URL="https://${{ github.repository_owner }}.github.io/${{ github.event.repository.name }}/${{ github.run_number }}/"
-          echo "REPORT_URL=$REPORT_URL" >> $GITHUB_ENV
+          RUN_URL="${{ github.server_url }}/${{ github.repository }}/actions/runs/${{ github.run_id }}"
 
-          STATUS="${{ needs.test.result }}"
-          if [ "$STATUS" = "success" ]; then
-            COLOR="green"
-          else
-            COLOR="red"
-          fi
+          EMAIL_BODY=$(cat <<EOF
+          <!DOCTYPE html>
+          <html>
+          <head>
+            <meta charset="UTF-8">
+            <title>Test Summary Report</title>
+          </head>
+          <body style="font-family: Arial, sans-serif; background:#f7f9fc; padding:20px;">
+            <h2 style="color:#2c3e50;">Flipkart Regression - Run #${{ github.run_number }}</h2>
 
-          cat <<EOF > email.html
-          <h2>Flipkart Regression - Run #${{ github.run_number }}</h2>
-          <p>Status: <b style="color:$COLOR">$STATUS</b></p>
-          <p>Allure Report: <a href="$REPORT_URL">$REPORT_URL</a></p>
-          <p>GitHub Run: <a href="${{ github.server_url }}/${{ github.repository }}/actions/runs/${{ github.run_id }}">${{ github.server_url }}/${{ github.repository }}/actions/runs/${{ github.run_id }}</a></p>
+            <div style="display:flex;gap:20px;">
+              <div>
+                <img src="https://quickchart.io/chart?c={
+                  type:'doughnut',
+                  data:{
+                    labels:['Passed','Failed','Skipped','Broken'],
+                    datasets:[{
+                      data:[${{ env.PASSED || 0 }},${{ env.FAILED || 0 }},${{ env.SKIPPED || 0 }},${{ env.BROKEN || 0 }}],
+                      backgroundColor:['#97cc64','#fd5a3e','#aaa','#ffd050']
+                    }]
+                  }
+                }" width="300">
+              </div>
+
+              <div style="background:#fff;padding:15px;border:1px solid #ddd;border-radius:8px;">
+                <p><b>Total Scenarios:</b> ${{ env.TOTAL_SCENARIOS || 0 }}</p>
+                <p>✅ <b>Passed:</b> ${{ env.PASSED || 0 }}</p>
+                <p>❌ <b>Failed:</b> ${{ env.FAILED || 0 }}</p>
+                <p>⏸️ <b>Skipped:</b> ${{ env.SKIPPED || 0 }}</p>
+                <p>🐛 <b>Broken:</b> ${{ env.BROKEN || 0 }}</p>
+                <p>🌐 <b>Environment:</b> ${{ inputs.ENV || 'DEV' }}</p>
+                <p>🕒 <b>Test Duration:</b> ${{ env.DURATION || 'N/A' }}</p>
+              </div>
+            </div>
+
+            <hr style="margin:20px 0;">
+
+            <div style="text-align:center;">
+              <a href="$REPORT_URL" style="background:#3498db;color:#fff;padding:12px 24px;text-decoration:none;border-radius:5px;margin:0 10px;">View Full Report</a>
+              <a href="$RUN_URL" style="background:#2ecc71;color:#fff;padding:12px 24px;text-decoration:none;border-radius:5px;margin:0 10px;">GitHub Action Run</a>
+            </div>
+
+            <div style="margin-top:30px;font-size:12px;color:#888;text-align:center;">
+              <p>&copy; 2025 Flipkart Regression Automation</p>
+            </div>
+          </body>
+          </html>
           EOF
+          )
+
+          echo "EMAIL_BODY<<EOF" >> $GITHUB_ENV
+          echo "$EMAIL_BODY" >> $GITHUB_ENV
+          echo "EOF" >> $GITHUB_ENV
 
       - name: Send notification email
         uses: dawidd6/action-send-mail@v3
@@ -107,7 +147,7 @@ jobs:
           subject: "Flipkart Regression - Run #${{ github.run_number }}"
           to: ${{ secrets.REPORT_TO }}
           from: ${{ secrets.SMTP_USERNAME }}
-          html_body: file://email.html
+          html_body: ${{ env.EMAIL_BODY }}
 
   cleanup:
     needs: [test, send-email]
