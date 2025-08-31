@@ -7,7 +7,13 @@ on:
   pull_request:
     branches:
       - main
-  workflow_dispatch:   # manual trigger from Actions tab
+  workflow_dispatch:
+    inputs:
+      MAVEN_COMMAND:
+        description: "Maven command to run"
+        required: false
+        default: "mvn clean test -DsuiteXmlFile=testng.xml"
+  
   schedule:
     - cron: "0 2 * * *"   # runs daily at 2:00 UTC
 
@@ -34,7 +40,8 @@ jobs:
           key: ${{ runner.os }}-maven-${{ hashFiles('**/pom.xml') }}
 
       - name: Run Tests with Maven
-        run: mvn clean test
+        run: |
+          ${{inputs.MAVEN_COMMAND}}
 
       - name: Generate Allure report
         if: always()
