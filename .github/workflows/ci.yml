@@ -54,6 +54,14 @@ jobs:
           unzip -q /tmp/allure.zip -d /tmp/
           /tmp/allure-2.22.1/bin/allure generate target/allure-results -o target/allure-report || true
 
+      - name: Debug Allure files
+        if: always()
+        run: |
+          echo "Checking allure-results..."
+          ls -R target/allure-results || true
+          echo "Checking allure-report..."
+          ls -R target/allure-report || true
+
       - name: Upload Allure Report as Artifact
         if: always()
         uses: actions/upload-artifact@v4
