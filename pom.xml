@@ -29,11 +29,7 @@
          <groupId>io.qameta.allure</groupId>
          <artifactId>allure-testng</artifactId>
          <version>2.24.0</version>
-     </dependency>
-     <dependency>
-         <groupId>io.qameta.allure</groupId>
-         <artifactId>allure-java-commons</artifactId>
-         <version>2.24.0</version>
+         <scope>test</scope>
      </dependency>
      <dependency>
          <groupId>io.github.bonigarcia</groupId>
@@ -52,6 +48,9 @@
                  <suiteXmlFiles>
                      <suiteXmlFile>testng.xml</suiteXmlFile>
                  </suiteXmlFiles>
+                 <systemPropertyVariables>
+                     <allure.results.directory>${project.build.directory}/allure-results</allure.results.directory>
+                 </systemPropertyVariables>
              </configuration>
          </plugin>
          <plugin>
