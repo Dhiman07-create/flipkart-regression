@@ -58,6 +58,13 @@ jobs:
           name: allure-report
           path: target/allure-report
 
+      - name: Deploy Allure report to GitHub Pages
+        if: always()
+        uses: peaceiris/actions-gh-pages@v3
+        with:
+          github_token: ${{ secrets.GITHUB_TOKEN }}
+          publish_dir: ./target/allure-report
+
       - name: Send notification email (via action)
         if: always()
         uses: dawidd6/action-send-mail@v3
@@ -72,6 +79,7 @@ jobs:
 
             ✅ Repo: ${{ github.repository }}
             ✅ Run: ${{ github.server_url }}/${{ github.repository }}/actions/runs/${{ github.run_id }}
+            ✅ Report: View the Allure Report here: https://${{ github.repository_owner }}.github.io/${{ github.repository }}/"
 
             The Allure report is available as an artifact in this run.
           to: ${{ secrets.REPORT_TO }}
