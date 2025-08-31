@@ -20,6 +20,11 @@ on:
 jobs:
   test:
     runs-on: ubuntu-latest
+    permissions:
+      contents: write     # ✅ required for gh-pages deployment
+      pages: write        # ✅ required for Pages
+      id-token: write     # ✅ required for OIDC authentication
+
     steps:
       - name: Checkout Code
         uses: actions/checkout@v3
