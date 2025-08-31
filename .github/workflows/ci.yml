@@ -85,12 +85,6 @@ jobs:
       - name: Install jq
         run: sudo apt-get install -y jq
 
-      - name: Debug Allure summary.json
-        if: always()
-        run: |
-          ls -R target/allure-report/widgets || echo "widgets folder not found"
-          cat target/allure-report/widgets/summary.json || echo "summary.json not found"
-
       - name: Upload Allure Report as Artifact
         if: always()
         uses: actions/upload-artifact@v4
@@ -182,6 +176,14 @@ jobs:
           TOTAL_SCENARIOS: ${{ env.TOTAL_SCENARIOS }}
           DURATION: ${{ env.DURATION }}
           ENVIRONMENT: ${{ inputs.ENV }}
+
+      - name: Debug Email Body
+        run: |
+            echo "------ EMAIL_BODY START ------"
+            echo "${EMAIL_BODY}" | head -20
+            echo "------ EMAIL_BODY END ------"
+        env:
+            EMAIL_BODY: ${{ env.EMAIL_BODY }}
 
       - name: Send notification email
         uses: dawidd6/action-send-mail@v3
