@@ -4,9 +4,10 @@ on:
   workflow_dispatch:
     inputs:
       MAVEN_COMMAND:
-        description: "Maven command (e.g. mvn clean test -DsuiteXmlFile=testng.xml)"
+        description: "Maven command to run"
         required: false
-        default: "mvn clean test"
+        default: "mvn clean test -DsuiteXmlFile=testng.xml"
+
   schedule:
     - cron: "0 2 * * *" # every day at 2AM UTC
 
