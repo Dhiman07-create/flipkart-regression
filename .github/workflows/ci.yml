@@ -6,7 +6,7 @@ on:
       MAVEN_COMMAND:
         description: "Maven command to run"
         required: false
-        default: "mvn clean test -DsuiteXmlFile=testng.xml"
+        default: "mvn clean test -Dsurefire.suiteXmlFiles=testng.xml"
 
   schedule:
     - cron: "0 2 * * *" # every day at 2AM UTC
