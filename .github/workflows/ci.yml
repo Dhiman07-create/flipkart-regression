@@ -117,36 +117,71 @@ jobs:
       - name: Generate Email Body
         id: generate-email-body
         run: |
-            REPORT_URL="https://${GITHUB_REPOSITORY_OWNER}.github.io/${GITHUB_REPOSITORY#*/}/${GITHUB_RUN_NUMBER}/"
-            RUN_URL="${GITHUB_SERVER_URL}/${GITHUB_REPOSITORY}/actions/runs/${GITHUB_RUN_ID}"
-            
-            EMAIL_BODY=$(cat <<EOF
-            <!DOCTYPE html>
-            <html>
-            <head><meta charset="UTF-8"><title>Test Summary Report</title></head>
-            <body>
-              <h2>Flipkart Regression - Run #$GITHUB_RUN_NUMBER</h2>
-              <p>Total: $TOTAL_SCENARIOS | ✅ $PASSED | ❌ $FAILED | ⏸️ $SKIPPED | 🐛 $BROKEN</p>
-              <p>Env: ${ENVIRONMENT:-DEV} | Duration: $DURATION</p>
-              <a href="$REPORT_URL">View Full Report</a> |
-              <a href="$RUN_URL">GitHub Run</a>
-            </body>
-            </html>
-            EOF
-            )
-            
-            # Export to GITHUB_ENV for later steps
-            echo "EMAIL_BODY<<EOF" >> $GITHUB_ENV
-            echo "$EMAIL_BODY" >> $GITHUB_ENV
-            echo "EOF" >> $GITHUB_ENV
+          REPORT_URL="https://${{ github.repository_owner }}.github.io/${{ github.event.repository.name }}/${{ github.run_number }}/"
+          RUN_URL="${{ github.server_url }}/${{ github.repository }}/actions/runs/${{ github.run_id }}"
+
+          EMAIL_BODY=$(cat <<EOF
+          <!DOCTYPE html>
+          <html>
+          <head>
+            <meta charset="UTF-8">
+            <title>Test Summary Report</title>
+          </head>
+          <body style="font-family: Arial, sans-serif; background:#f7f9fc; padding:20px;">
+            <h2 style="color:#2c3e50;">Flipkart Regression - Run #${{ github.run_number }}</h2>
+
+            <div style="display:flex;gap:20px;">
+              <div>
+                <img src="https://quickchart.io/chart?c={
+                  type:'doughnut',
+                  data:{
+                    labels:['Passed','Failed','Skipped','Broken'],
+                    datasets:[{
+                      data:[${{ env.PASSED || 0 }},${{ env.FAILED || 0 }},${{ env.SKIPPED || 0 }},${{ env.BROKEN || 0 }}],
+                      backgroundColor:['#97cc64','#fd5a3e','#aaa','#ffd050']
+                    }]
+                  }
+                }" width="300">
+              </div>
+
+              <div style="background:#fff;padding:15px;border:1px solid #ddd;border-radius:8px;">
+                <p><b>Total Scenarios:</b> $TOTAL_SCENARIOS</p>
+                <p>✅ <b>Passed:</b> $PASSED</p>
+                <p>❌ <b>Failed:</b> $FAILED</p>
+                <p>⏸️ <b>Skipped:</b> $SKIPPED</p>
+                <p>🐛 <b>Broken:</b> $BROKEN</p>
+                <p>🌐 <b>Environment:</b> ${ENVIRONMENT:-DEV}</p>
+                <p>🕒 <b>Test Duration:</b> $DURATION</p>
+              </div>
+            </div>
+
+            <hr style="margin:20px 0;">
+
+            <div style="text-align:center;">
+              <a href="$REPORT_URL" style="background:#3498db;color:#fff;padding:12px 24px;text-decoration:none;border-radius:5px;margin:0 10px;">View Full Report</a>
+              <a href="$RUN_URL" style="background:#2ecc71;color:#fff;padding:12px 24px;text-decoration:none;border-radius:5px;margin:0 10px;">GitHub Action Run</a>
+            </div>
+
+            <div style="margin-top:30px;font-size:12px;color:#888;text-align:center;">
+              <p>&copy; 2025 Flipkart Regression Automation</p>
+            </div>
+          </body>
+          </html>
+          EOF
+          )
+
+          echo "EMAIL_BODY<<EOF" >> $GITHUB_ENV
+          echo "$EMAIL_BODY" >> $GITHUB_ENV
+          echo "EOF" >> $GITHUB_ENV
+
         env:
-            PASSED: ${{ env.PASSED }}
-            FAILED: ${{ env.FAILED }}
-            SKIPPED: ${{ env.SKIPPED }}
-            BROKEN: ${{ env.BROKEN }}
-            TOTAL_SCENARIOS: ${{ env.TOTAL_SCENARIOS }}
-            DURATION: ${{ env.DURATION }}
-            ENVIRONMENT: ${{ inputs.ENV }}
+          PASSED: ${{ env.PASSED }}
+          FAILED: ${{ env.FAILED }}
+          SKIPPED: ${{ env.SKIPPED }}
+          BROKEN: ${{ env.BROKEN }}
+          TOTAL_SCENARIOS: ${{ env.TOTAL_SCENARIOS }}
+          DURATION: ${{ env.DURATION }}
+          ENVIRONMENT: ${{ inputs.ENV }}
 
       - name: Send notification email
         uses: dawidd6/action-send-mail@v3
