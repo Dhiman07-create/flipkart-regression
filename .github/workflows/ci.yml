@@ -85,6 +85,11 @@ jobs:
       - name: Install jq
         run: sudo apt-get install -y jq
 
+      - name: Debug Allure summary.json
+        if: always()
+        run: |
+          ls -R target/allure-report/widgets || echo "widgets folder not found"
+          cat target/allure-report/widgets/summary.json || echo "summary.json not found"
 
       - name: Upload Allure Report as Artifact
         if: always()
