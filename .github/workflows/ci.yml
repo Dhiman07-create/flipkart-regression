@@ -196,7 +196,8 @@ jobs:
           to: ${{ secrets.REPORT_TO }}
           from: ${{ secrets.SMTP_USERNAME }}
           content_type: text/html
-          html_body: ${{ env.EMAIL_BODY }}
+          html_body: |
+            ${{ env.EMAIL_BODY }}
 
   cleanup:
     needs: [test, send-email]
