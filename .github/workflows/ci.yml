@@ -1,8 +1,15 @@
 name: Flipkart Regression CI
+
 on:
-  workflow_dispatch:
+  push:
+    branches:
+      - main
+  pull_request:
+    branches:
+      - main
+  workflow_dispatch:   # manual trigger from Actions tab
   schedule:
-    - cron: "0 2 * * *"
+    - cron: "0 2 * * *"   # runs daily at 2:00 UTC
 
 jobs:
   test:
@@ -29,7 +36,7 @@ jobs:
       - name: Run Tests with Maven
         run: mvn clean test
 
-      - name: Generate Allure report (optional)
+      - name: Generate Allure report
         if: always()
         run: |
           sudo apt-get update && sudo apt-get install -y unzip wget
@@ -52,7 +59,13 @@ jobs:
           server_port: ${{ secrets.SMTP_PORT }}
           username: ${{ secrets.SMTP_USERNAME }}
           password: ${{ secrets.SMTP_PASSWORD }}
-          subject: "Flipkart Regression - ${{ github.run_number }}"
-          body: "Regression run completed. Artifacts: ${{ github.server_url }}/${{ github.repository }}/actions/runs/${{ github.run_id }}\n\nAllure report available as artifact."
+          subject: "Flipkart Regression - Run #${{ github.run_number }}"
+          body: |
+            Flipkart regression run completed.
+
+            ✅ Repo: ${{ github.repository }}
+            ✅ Run: ${{ github.server_url }}/${{ github.repository }}/actions/runs/${{ github.run_id }}
+
+            The Allure report is available as an artifact in this run.
           to: ${{ secrets.REPORT_TO }}
           from: ${{ secrets.SMTP_USERNAME }}
