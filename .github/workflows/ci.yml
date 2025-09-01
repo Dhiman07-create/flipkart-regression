@@ -57,7 +57,7 @@ jobs:
       - name: Install jq (if necessary)
         run: |
           if ! command -v jq &> /dev/null; then
-            apt-get update && apt-get install -y jq
+            sudo apt-get update && sudo apt-get install -y jq
           fi
 
       - name: Extract test details from Allure report
@@ -66,7 +66,7 @@ jobs:
         run: |
           set -e
           
-          SUMMARY=$(jq -e '{total: .statistic.total, passed: .statistic.passed, failed: .statistic.failed, skipped: .statistic.skipped, broken: .statistic.broken, unknown: .statistic.unknown, duration: .time.duration | tostring}' ./downloaded-artifacts/summary.json || echo '{}')
+          SUMMARY=$(jq -e '{total: .statistic.total, passed: .statistic.passed, failed: .statistic.failed, skipped: .statistic.skipped, broken: .statistic.broken, unknown: .statistic.unknown, duration: .time.duration | tostring}' ./target/allure-report/widgets/summary.json || echo '{}')
           
           DURATION_MS=$(echo $SUMMARY | jq -r .duration)
           DURATION=$((DURATION_MS / 1000))
@@ -99,10 +99,9 @@ jobs:
           
           echo "PASS_RATE=$PASS_RATE" >> $GITHUB_ENV
           
-          FAILED=$(echo $SUMMARY | jq -r .failed)
           if [ "$FAILED" -gt 0 ]; then
-            FAILED_TESTS=$(jq -e '[.. | select(.name? | type == "string" and contains(".")) | {test: .name, test_cases: [.children[]? | select(.status == "failed") | .name]}] | map(select(.test_cases | length > 0))' ./downloaded-artifacts/data/suites.json || echo '[]')
-            jq -e '[.. | select(.name? | type == "string" and contains(".")) | {error_message: .name, "test_case": ([.children[]?.name])}]' ./downloaded-artifacts/data/categories.json > failed_messages.json || echo '[]' > failed_messages.json
+            FAILED_TESTS=$(jq -e '[.. | select(.name? | type == "string" and contains(".")) | {test: .name, test_cases: [.children[]? | select(.status == "failed") | .name]}] | map(select(.test_cases | length > 0))' ./target/allure-report/data/suites.json || echo '[]')
+            jq -e '[.. | select(.name? | type == "string" and contains(".")) | {error_message: .name, "test_case": ([.children[]?.name])}]' ./target/allure-report/data/categories.json > failed_messages.json || echo '[]' > failed_messages.json
             echo "HAS_FAILED_TESTS=true" >> $GITHUB_ENV
             echo "FAILED_TESTS=$(echo "$FAILED_TESTS" | jq -c .)" >> $GITHUB_ENV
           else
@@ -202,14 +201,6 @@ jobs:
           TOTAL_SCENARIOS: ${{ env.TOTAL_SCENARIOS }}
           DURATION: ${{ env.DURATION }}
           ENVIRONMENT: ${{ inputs.ENV }}
-
-      - name: Debug Email Body
-        run: |
-            echo "------ EMAIL_BODY START ------"
-            echo "${EMAIL_BODY}" | head -20
-            echo "------ EMAIL_BODY END ------"
-        env:
-            EMAIL_BODY: ${{ env.EMAIL_BODY }}
 
       - name: Send notification email
         uses: dawidd6/action-send-mail@v3
