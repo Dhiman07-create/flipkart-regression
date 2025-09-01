@@ -133,6 +133,21 @@ jobs:
       - name: Checkout
         uses: actions/checkout@v3
 
+      - name: Debug extracted test details
+        run: |
+          echo "Debugging extracted Allure metrics..."
+          echo "TOTAL_SCENARIOS=$TOTAL_SCENARIOS"
+          echo "PASSED=$PASSED"
+          echo "FAILED=$FAILED"
+          echo "SKIPPED=$SKIPPED"
+          echo "BROKEN=$BROKEN"
+          echo "UNKNOWN=$UNKNOWN"
+          echo "DURATION=$DURATION"
+          echo "PASS_RATE=$PASS_RATE"
+          echo "EXECUTION_DATETIME=$EXECUTION_DATETIME"
+          echo "HAS_FAILED_TESTS=$HAS_FAILED_TESTS"
+          echo "FAILED_TESTS=$FAILED_TESTS"
+
       - name: Generate Email Body
         id: generate-email-body
         run: |
