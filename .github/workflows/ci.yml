@@ -82,8 +82,62 @@ jobs:
             echo "DURATION=N/A" >> $GITHUB_ENV
           fi
 
-      - name: Install jq
-        run: sudo apt-get install -y jq
+      - name: Install jq (if necessary)
+        run: |
+          if ! command -v jq &> /dev/null; then
+            apt-get update && apt-get install -y jq
+          fi
+
+      - name: Extract test details from Allure report
+        if: always()
+        id: extract-test-details
+        run: |
+          set -e
+          
+          SUMMARY=$(jq -e '{total: .statistic.total, passed: .statistic.passed, failed: .statistic.failed, skipped: .statistic.skipped, broken: .statistic.broken, unknown: .statistic.unknown, duration: .time.duration | tostring}' ./downloaded-artifacts/widgets/summary.json || echo '{}')
+          
+          DURATION_MS=$(echo $SUMMARY | jq -r .duration)
+          DURATION=$((DURATION_MS / 1000))
+          HOURS=$((DURATION / 3600))
+          MINUTES=$(( (DURATION % 3600) / 60 ))
+          SECONDS=$((DURATION % 60))
+          FORMATTED_DURATION=$(printf "%02d:%02d:%02d" $HOURS $MINUTES $SECONDS)
+          
+          TOTAL_SCENARIOS=$(echo "$SUMMARY" | jq -r .total)
+          PASSED=$(echo "$SUMMARY" | jq -r .passed)
+          FAILED=$(echo "$SUMMARY" | jq -r .failed)
+          SKIPPED=$(echo "$SUMMARY" | jq -r .skipped)
+          BROKEN=$(echo "$SUMMARY" | jq -r .broken)
+          UNKNOWN=$(echo "$SUMMARY" | jq -r .unknown)
+          
+          echo "TOTAL_SCENARIOS=$TOTAL_SCENARIOS" >> $GITHUB_ENV
+          echo "PASSED=$PASSED" >> $GITHUB_ENV
+          echo "FAILED=$FAILED" >> $GITHUB_ENV
+          echo "SKIPPED=$SKIPPED" >> $GITHUB_ENV
+          echo "BROKEN=$BROKEN" >> $GITHUB_ENV
+          echo "UNKNOWN=$UNKNOWN" >> $GITHUB_ENV
+          echo "DURATION=$FORMATTED_DURATION" >> $GITHUB_ENV
+          echo "EXECUTION_DATETIME=$(date)" >> $GITHUB_ENV
+          
+          if [ "$TOTAL_SCENARIOS" -gt 0 ]; then
+            PASS_RATE=$((PASSED * 100 / TOTAL_SCENARIOS))
+          else
+            PASS_RATE=0
+          fi
+          
+          echo "PASS_RATE=$PASS_RATE" >> $GITHUB_ENV
+          
+          FAILED=$(echo $SUMMARY | jq -r .failed)
+          if [ "$FAILED" -gt 0 ]; then
+            FAILED_TESTS=$(jq -e '[.. | select(.name? | type == "string" and contains(".")) | {test: .name, test_cases: [.children[]? | select(.status == "failed") | .name]}] | map(select(.test_cases | length > 0))' ./downloaded-artifacts/data/suites.json || echo '[]')
+            jq -e '[.. | select(.name? | type == "string" and contains(".")) | {error_message: .name, "test_case": ([.children[]?.name])}]' ./downloaded-artifacts/data/categories.json > failed_messages.json || echo '[]' > failed_messages.json
+            echo "HAS_FAILED_TESTS=true" >> $GITHUB_ENV
+            echo "FAILED_TESTS=$(echo "$FAILED_TESTS" | jq -c .)" >> $GITHUB_ENV
+          else
+            echo "HAS_FAILED_TESTS=false" >> $GITHUB_ENV
+            echo "FAILED_TESTS=[]" >> $GITHUB_ENV
+            echo "FAILED_MESSAGES=[]" >> $GITHUB_ENV
+          fi
 
       - name: Upload Allure Report as Artifact
         if: always()
