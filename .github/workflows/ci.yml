@@ -54,34 +54,6 @@ jobs:
           unzip -q /tmp/allure.zip -d /tmp/
           /tmp/allure-2.22.1/bin/allure generate target/allure-results -o target/allure-report || true
 
-      - name: Extract Allure summary stats
-        if: always()
-        run: |
-          SUMMARY_FILE="target/allure-report/widgets/summary.json"
-          if [ -f "$SUMMARY_FILE" ]; then
-            PASSED=$(jq '.statistic.passed' $SUMMARY_FILE)
-            FAILED=$(jq '.statistic.failed' $SUMMARY_FILE)
-            SKIPPED=$(jq '.statistic.skipped' $SUMMARY_FILE)
-            BROKEN=$(jq '.statistic.broken' $SUMMARY_FILE)
-            TOTAL=$(jq '.statistic.total' $SUMMARY_FILE)
-            DURATION=$(jq '.time.duration' $SUMMARY_FILE)
-
-            echo "PASSED=$PASSED" >> $GITHUB_ENV
-            echo "FAILED=$FAILED" >> $GITHUB_ENV
-            echo "SKIPPED=$SKIPPED" >> $GITHUB_ENV
-            echo "BROKEN=$BROKEN" >> $GITHUB_ENV
-            echo "TOTAL_SCENARIOS=$TOTAL" >> $GITHUB_ENV
-            echo "DURATION=$DURATION ms" >> $GITHUB_ENV
-          else
-            echo "summary.json not found!"
-            echo "PASSED=0" >> $GITHUB_ENV
-            echo "FAILED=0" >> $GITHUB_ENV
-            echo "SKIPPED=0" >> $GITHUB_ENV
-            echo "BROKEN=0" >> $GITHUB_ENV
-            echo "TOTAL_SCENARIOS=0" >> $GITHUB_ENV
-            echo "DURATION=N/A" >> $GITHUB_ENV
-          fi
-
       - name: Install jq (if necessary)
         run: |
           if ! command -v jq &> /dev/null; then
@@ -94,7 +66,7 @@ jobs:
         run: |
           set -e
           
-          SUMMARY=$(jq -e '{total: .statistic.total, passed: .statistic.passed, failed: .statistic.failed, skipped: .statistic.skipped, broken: .statistic.broken, unknown: .statistic.unknown, duration: .time.duration | tostring}' ./downloaded-artifacts/widgets/summary.json || echo '{}')
+          SUMMARY=$(jq -e '{total: .statistic.total, passed: .statistic.passed, failed: .statistic.failed, skipped: .statistic.skipped, broken: .statistic.broken, unknown: .statistic.unknown, duration: .time.duration | tostring}' ./downloaded-artifacts/summary.json || echo '{}')
           
           DURATION_MS=$(echo $SUMMARY | jq -r .duration)
           DURATION=$((DURATION_MS / 1000))
