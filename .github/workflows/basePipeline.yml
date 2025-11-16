@@ -310,9 +310,8 @@ jobs:
           username: ${{ secrets.SMTP_USERNAME }}
           password: ${{ secrets.SMTP_PASSWORD }}
           subject: "Flipkart Regression - Run #${{ github.run_number }}"
-          to: ${{ secrets.REPORT_TO }}
-          from: ${{ secrets.SMTP_USERNAME }}
-          content_type: text/html
+          to: 'dasguptadhiman5@gmail.com'
+          from: 'dasguptadhiman9@gmail.com'
           html_body: |
             ${{ env.EMAIL_BODY }}
 
