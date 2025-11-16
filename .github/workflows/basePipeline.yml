@@ -313,7 +313,7 @@ jobs:
             ${{ env.EMAIL_BODY }}
 
   cleanup:
-    needs: [test, send-email]
+    needs: [execute-tests-and-generate-report, send-email]
     runs-on: ubuntu-latest
     if: always()
     steps:
