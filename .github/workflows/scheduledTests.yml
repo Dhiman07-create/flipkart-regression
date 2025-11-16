@@ -1,0 +1,16 @@
+name: Flipkart Scheduled Tests
+
+on:
+  schedule:
+    - cron: "0 2 * * *" # every day at 2AM UTC
+
+jobs:
+  FlipkartTest:
+    uses: Dhiman07-create/flipkart-regression/.github/workflows/basePipeline.yml@main
+    with:
+      THREADS: 1
+      ALLURE_REPORT_NAME: Flipkart Regression
+      ALLURE_REPORT_DEPLOY_FOLDER: Flipkart_Regression_Tests
+      TEST_SUITE: testng.xml
+      SEND_EMAIL: 'true'
+      EMAIL_TITLE: Flipkart Regression Test Report

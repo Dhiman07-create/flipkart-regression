@@ -1,27 +1,56 @@
-name: Flipkart Regression CI
+name: Base Pipeline Tests
 
 on:
-  workflow_dispatch:
+  workflow_call:
     inputs:
+      THREADS:
+        required: true
+        type: string
+      ALLURE_REPORT_NAME:
+        required: true
+        type: string
+      ALLURE_REPORT_DEPLOY_FOLDER:
+        required: true
+        type: string
+      TEST_SUITE:
+        required: false
+        type: string
+        default: 'testng.xml'
+      SEND_EMAIL:
+        required: false
+        type: string
+        default: 'false'
+      EMAIL_TITLE:
+        required: false
+        type: string
+      EMAIL_RECIPIENTS:
+        required: false
+        type: string
+        default: 'dasguptadhiman5@gmail.com'
       MAVEN_COMMAND:
         description: "Maven command to run"
         required: false
         default: "mvn clean test -Dsurefire.suiteXmlFiles=testng.xml"
 
-  schedule:
-    - cron: "0 2 * * *" # every day at 2AM UTC
-
 jobs:
-  test:
+  execute-tests-and-generate-report:
     runs-on: ubuntu-latest
     permissions:
       contents: write     # ✅ required for gh-pages deployment
       pages: write        # ✅ required for Pages
       id-token: write     # ✅ required for OIDC authentication
+    timeout-minutes: 300
+    outputs:
+      report-path: ${{ steps.construct_path.outputs.report-path }}
 
     steps:
       - name: Checkout Code
-        uses: actions/checkout@v3
+        uses: actions/checkout@v4
+
+      - name: Set up Node.js (latest version)
+        uses: actions/setup-node@v4
+        with:
+          node-version: '20'
 
       - name: Set up JDK
         uses: actions/setup-java@v3
@@ -38,21 +67,99 @@ jobs:
           path: ~/.m2/repository
           key: ${{ runner.os }}-maven-${{ hashFiles('**/pom.xml') }}
 
-      - name: Run Tests with Maven (with retry)
+      - name: Run tests
+        id: run-tests
+        run: mvn clean test -Dsurefire.suiteXmlFiles=testng.xml
+        continue-on-error: true
+
+      - name: Re-run failed tests
+        if: ${{ steps.run-tests.outcome == 'failure' && inputs.RERUN_FAILED_TESTS == 'true' }}
         run: |
-          set -e
-          for i in 1 2 3; do
-            echo "Attempt #$i"
-            ${{ github.event.inputs.MAVEN_COMMAND || 'mvn clean test' }} && break || sleep 10
-          done
+          if [ ! -f target/surefire-reports/testng-failed.xml ]; then
+            echo "No failed tests to rerun."
+            exit 0
+          fi
+            
+          sed -E -i 's/thread-count="[0-9]+"/thread-count="${{ inputs.RERUN_FAILED_TESTS_THREADS }}"/g; s/name="Failed suite \[(.*?)\]"/name="\1"/g; s/\(failed\)//g' target/surefire-reports/testng-failed.xml
+          mvn verify -q -Dsurefire.suiteXmlFiles=target/surefire-reports/testng-failed.xml -Denv=${{ inputs.ENV }} -Dselenide.headless=true -s settings.xml
+        continue-on-error: true
+
+      - name: Checkout gh-pages for history
+        uses: actions/checkout@v4
+        with:
+          ref: gh-pages
+          path: gh-pages
+
+      - name: Extract filename without extension
+        run: |
+          FILENAME=$(basename "${{ inputs.TEST_SUITE }}" .xml)
+          echo "FILENAME=$FILENAME" >> $GITHUB_ENV
 
       - name: Generate Allure Report
+        uses: andgineer/allure-report@v3.4
+        id: allure-report
         if: always()
+        with:
+          allure-results: /target/allure-results
+          website: gh-pages
+          reports-site-path: ${{ inputs.ENV }}/${{ env.FILENAME }}
+          max-reports: 10
+
+      - name: Deploy Allure report to GitHub Pages
+        uses: peaceiris/actions-gh-pages@v4
+        if: ${{ always() && steps.allure-report.outcome == 'success ' }}
+        with:
+          github_token: ${{ secrets.GITHUB_TOKEN }}
+          publish_branch: gh-pages
+          publish_dir: ./target/allure-report
+          destination_dir: ${{ github.run_number }}
+
+      - name: Construct Report Path
+        id: construct-path
         run: |
-          sudo apt-get update && sudo apt-get install -y unzip wget
-          wget -q https://github.com/allure-framework/allure2/releases/download/2.22.1/allure-2.22.1.zip -O /tmp/allure.zip
-          unzip -q /tmp/allure.zip -d /tmp/
-          /tmp/allure-2.22.1/bin/allure generate target/allure-results -o target/allure-report || true
+          echo "report-path=${{ steps.allure-report.outputs.reports-site-path }}/${{ github.run_number }}" >> $GITHUB_OUTPUT
+          echo "REPORT_PATH=${{ steps.allure-report.outputs.reports-site-path }}/${{ github.run_number }}" >> $GITHUB_ENV
+
+      - name: Publish Allure report link
+        if: ${{ always() && steps.allure-report.outcome == 'success' }}
+        uses: actions/github-script@v7
+        with:
+        script: |
+          const allureReportLink = https://${{ github.repository_owner }}.github.io/${{ github.event.repository.name }}/${{ github.run_number }}/
+          console.log(Allure Report link: ${ allureReportLink })
+          const issueBody = [Allure report](${ allureReportLink })
+          const newIssue = await github.rest.issues.create({
+            owner: context.repo.owner,
+            repo: context.repo.repo,
+            title: '[${{ inputs.ENV }}] ${{ inputs.ALLURE_REPORT_NAME }} #${{ github.run_number }}',
+            body: issueBody
+          })
+
+      - name: Upload Allure report files to artifacts
+        if: ${{ always() && steps.allure-report.outcome == 'success' }}
+        uses: actions/upload-artifact@v4
+        with:
+          name: allure-report-folder
+          path: ./gh-pages/${{ env.REPORT_PATH }}
+          retention-days: 3
+
+      - name: Upload Allure Report as Artifact
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: allure-report
+          path: target/allure-report
+
+  send-email:
+    needs: execute-tests-and-send-report
+    runs-on: ubuntu-latest
+    if: ${{ always() && !contains(needs..result, 'failure') && !contains(needs..result, 'cancelled') && inputs.SEND_EMAIL == 'true' }}
+    steps:
+      - name: Download folder artifact
+        uses: actions/download-artifact@v4
+        with:
+          name: allure-report-folder
+          path: ./downloaded-artifacts
 
       - name: Install jq (if necessary)
         run: |
@@ -65,23 +172,23 @@ jobs:
         id: extract-test-details
         run: |
           set -e
-          
+
           SUMMARY=$(jq -e '{total: .statistic.total, passed: .statistic.passed, failed: .statistic.failed, skipped: .statistic.skipped, broken: .statistic.broken, unknown: .statistic.unknown, duration: .time.duration | tostring}' ./target/allure-report/widgets/summary.json || echo '{}')
-          
+
           DURATION_MS=$(echo $SUMMARY | jq -r .duration)
           DURATION=$((DURATION_MS / 1000))
           HOURS=$((DURATION / 3600))
           MINUTES=$(( (DURATION % 3600) / 60 ))
           SECONDS=$((DURATION % 60))
           FORMATTED_DURATION=$(printf "%02d:%02d:%02d" $HOURS $MINUTES $SECONDS)
-          
+
           TOTAL_SCENARIOS=$(echo "$SUMMARY" | jq -r .total)
           PASSED=$(echo "$SUMMARY" | jq -r .passed)
           FAILED=$(echo "$SUMMARY" | jq -r .failed)
           SKIPPED=$(echo "$SUMMARY" | jq -r .skipped)
           BROKEN=$(echo "$SUMMARY" | jq -r .broken)
           UNKNOWN=$(echo "$SUMMARY" | jq -r .unknown)
-          
+
           echo "TOTAL_SCENARIOS=$TOTAL_SCENARIOS" >> $GITHUB_ENV
           echo "PASSED=$PASSED" >> $GITHUB_ENV
           echo "FAILED=$FAILED" >> $GITHUB_ENV
@@ -90,15 +197,15 @@ jobs:
           echo "UNKNOWN=$UNKNOWN" >> $GITHUB_ENV
           echo "DURATION=$FORMATTED_DURATION" >> $GITHUB_ENV
           echo "EXECUTION_DATETIME=$(date)" >> $GITHUB_ENV
-          
+
           if [ "$TOTAL_SCENARIOS" -gt 0 ]; then
             PASS_RATE=$((PASSED * 100 / TOTAL_SCENARIOS))
           else
             PASS_RATE=0
           fi
-          
+
           echo "PASS_RATE=$PASS_RATE" >> $GITHUB_ENV
-          
+
           if [ "$FAILED" -gt 0 ]; then
             FAILED_TESTS=$(jq -e '[.. | select(.name? | type == "string" and contains(".")) | {test: .name, test_cases: [.children[]? | select(.status == "failed") | .name]}] | map(select(.test_cases | length > 0))' ./target/allure-report/data/suites.json || echo '[]')
             jq -e '[.. | select(.name? | type == "string" and contains(".")) | {error_message: .name, "test_case": ([.children[]?.name])}]' ./target/allure-report/data/categories.json > failed_messages.json || echo '[]' > failed_messages.json
@@ -109,29 +216,6 @@ jobs:
             echo "FAILED_TESTS=[]" >> $GITHUB_ENV
             echo "FAILED_MESSAGES=[]" >> $GITHUB_ENV
           fi
-
-      - name: Upload Allure Report as Artifact
-        if: always()
-        uses: actions/upload-artifact@v4
-        with:
-          name: allure-report
-          path: target/allure-report
-
-      - name: Deploy Allure report to GitHub Pages
-        if: always()
-        uses: peaceiris/actions-gh-pages@v3
-        with:
-          github_token: ${{ secrets.GITHUB_TOKEN }}
-          publish_dir: ./target/allure-report
-          destination_dir: ${{ github.run_number }}
-
-  send-email:
-    needs: test
-    runs-on: ubuntu-latest
-    if: always()
-    steps:
-      - name: Checkout
-        uses: actions/checkout@v3
 
       - name: Debug extracted test details
         run: |
@@ -218,6 +302,7 @@ jobs:
           ENVIRONMENT: ${{ inputs.ENV }}
 
       - name: Send notification email
+        continue-on-error: true
         uses: dawidd6/action-send-mail@v3
         with:
           server_address: ${{ secrets.SMTP_HOST }}
