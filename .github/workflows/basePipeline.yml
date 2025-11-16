@@ -143,13 +143,6 @@ jobs:
           path: ./gh-pages/${{ env.REPORT_PATH }}
           retention-days: 3
 
-      - name: Upload Allure Report as Artifact
-        if: always()
-        uses: actions/upload-artifact@v4
-        with:
-          name: allure-report
-          path: target/allure-report
-
   send-email:
     needs: execute-tests-and-generate-report
     runs-on: ubuntu-latest
