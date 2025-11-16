@@ -120,16 +120,16 @@ jobs:
         if: ${{ always() && steps.allure-report.outcome == 'success' }}
         uses: actions/github-script@v7
         with:
-        script: |
-          const allureReportLink = https://${{ github.repository_owner }}.github.io/${{ github.event.repository.name }}/${{ github.run_number }}/
-          console.log(Allure Report link: ${ allureReportLink })
-          const issueBody = [Allure report](${ allureReportLink })
-          const newIssue = await github.rest.issues.create({
-            owner: context.repo.owner,
-            repo: context.repo.repo,
-            title: '[${{ inputs.ENV }}] ${{ inputs.ALLURE_REPORT_NAME }} #${{ github.run_number }}',
-            body: issueBody
-          })
+          script: |
+            const allureReportLink = https://${{ github.repository_owner }}.github.io/${{ github.event.repository.name }}/${{ github.run_number }}/
+            console.log(Allure Report link: ${ allureReportLink })
+            const issueBody = [Allure report](${ allureReportLink })
+            const newIssue = await github.rest.issues.create({
+              owner: context.repo.owner,
+              repo: context.repo.repo,
+              title: '[${{ inputs.ENV }}] ${{ inputs.ALLURE_REPORT_NAME }} #${{ github.run_number }}',
+              body: issueBody
+            })
 
       - name: Upload Allure report files to artifacts
         if: ${{ always() && steps.allure-report.outcome == 'success' }}
