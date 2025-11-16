@@ -10,7 +10,7 @@ on:
 
 jobs:
   FlipkartTest:
-    uses: Dhiman07-create/flipkart-regression/.github/workflows/basePipeline.yml@main
+    uses: ./.github/workflows/basePipeline.yml
     with:
       THREADS: ${{inputs.THREADS}}
       ALLURE_REPORT_NAME: Flipkart Regression
