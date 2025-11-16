@@ -95,10 +95,13 @@ jobs:
         uses: andgineer/allure-report@v3.4
         id: allure-report
         if: always()
+        env:
+          JAVA_HOME: ""
+          JAVA_HOME_17_X64: ""
         with:
           allure-results: ./target/allure-results
           website: gh-pages
-          reports-site-path: ${{ inputs.TEST_SUITE }}
+          reports-site-path: ${{ env.FILENAME }}
           max-reports: 10
 
       - name: Deploy Allure report to GitHub Pages
