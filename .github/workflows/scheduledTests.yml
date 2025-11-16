@@ -4,6 +4,12 @@ on:
   schedule:
     - cron: "0 2 * * *" # every day at 2AM UTC
 
+permissions:
+  contents: write
+  pages: write
+  id-token: write
+  issues: write
+
 jobs:
   FlipkartTest:
     uses: ./.github/workflows/basePipeline.yml
