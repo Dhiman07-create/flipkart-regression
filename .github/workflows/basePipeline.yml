@@ -147,7 +147,7 @@ jobs:
           path: target/allure-report
 
   send-email:
-    needs: execute-tests-and-send-report
+    needs: execute-tests-and-generate-report
     runs-on: ubuntu-latest
     if: ${{ always() && !contains(needs.*.result, 'failure') && !contains(needs.*.result, 'cancelled') && inputs.SEND_EMAIL == 'true' }}
     steps:
