@@ -27,10 +27,6 @@ on:
         required: false
         type: string
         default: 'dasguptadhiman5@gmail.com'
-      MAVEN_COMMAND:
-        description: "Maven command to run"
-        required: false
-        default: "mvn clean test -Dsurefire.suiteXmlFiles=testng.xml"
 
 jobs:
   execute-tests-and-generate-report:
