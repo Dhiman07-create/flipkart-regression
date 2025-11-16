@@ -25,4 +25,4 @@ jobs:
       SEND_EMAIL: 'true'
       EMAIL_TITLE: Flipkart Regression Test Report
 
-    secrets: inherit   # ✅ IMPORTANT
+    secrets: inherit
