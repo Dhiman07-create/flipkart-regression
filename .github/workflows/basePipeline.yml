@@ -3,6 +3,10 @@ name: Base Pipeline Tests
 on:
   workflow_call:
     inputs:
+      ENV:
+        required: false
+        type: string
+        default: 'DEV'
       THREADS:
         required: true
         type: string
@@ -112,6 +116,7 @@ jobs:
           github_token: ${{ secrets.GITHUB_TOKEN }}
           publish_branch: gh-pages
           publish_dir: ./gh-pages
+          destination_dir: ${{ github.run_number }}
 
       - name: Construct Report Path
         id: construct-path
