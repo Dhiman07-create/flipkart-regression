@@ -96,9 +96,9 @@ jobs:
         id: allure-report
         if: always()
         with:
-          allure-results: /target/allure-results
+          allure-results: ./target/allure-results
           website: gh-pages
-          reports-site-path: ${{ inputs.ENV }}/${{ env.FILENAME }}
+          reports-site-path: ${{ inputs.TEST_SUITE }}
           max-reports: 10
 
       - name: Deploy Allure report to GitHub Pages
