@@ -124,13 +124,13 @@ jobs:
         uses: actions/github-script@v7
         with:
           script: |
-            const allureReportLink = https://${{ github.repository_owner }}.github.io/${{ github.event.repository.name }}/${{ github.run_number }}/
-            console.log(Allure Report link: ${ allureReportLink })
-            const issueBody = [Allure report](${ allureReportLink })
+            const allureReportLink = `https://${{ github.repository_owner }}.github.io/${{ github.event.repository.name }}/${{ github.run_number }}/`
+            console.log(`Allure Report link: ${ allureReportLink }`)
+            const issueBody = `[Allure report](${ allureReportLink })`
             const newIssue = await github.rest.issues.create({
               owner: context.repo.owner,
               repo: context.repo.repo,
-              title: '[${{ inputs.ENV }}] ${{ inputs.ALLURE_REPORT_NAME }} #${{ github.run_number }}',
+              title: '[${{ inputs.ALLURE_REPORT_NAME }} #${{ github.run_number }}',
               body: issueBody
             })
 

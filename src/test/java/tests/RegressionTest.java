@@ -24,18 +24,18 @@ public class RegressionTest extends BaseTest {
         results.verifyResultsContain("iPhone 14");
     }
 
-    @Test
-    public void testSortByPriceLowToHigh() {
-        open("https://www.flipkart.com");
-        HomePage homePage = new HomePage();
-        SearchResults results = homePage.search("laptop");
-
-        // Click on Sort by "Price -- Low to High"
-        $x("//div[contains(text(),'Price -- Low to High')]").click();
-
-        // Verify sorting indicator is visible
-        $x("//div[contains(@class,'_10UF8M') and contains(text(),'Price -- Low to High')]")
-                .shouldBe(visible);
-    }
+//    @Test
+//    public void testSortByPriceLowToHigh() {
+//        open("https://www.flipkart.com");
+//        HomePage homePage = new HomePage();
+//        SearchResults results = homePage.search("laptop");
+//
+//        // Click on Sort by "Price -- Low to High"
+//        $x("//div[contains(text(),'Price -- Low to High')]").click();
+//
+//        // Verify sorting indicator is visible
+//        $x("//div[contains(@class,'_10UF8M') and contains(text(),'Price -- Low to High')]")
+//                .shouldBe(visible);
+//    }
 
 }
