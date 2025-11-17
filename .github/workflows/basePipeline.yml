@@ -164,12 +164,6 @@ jobs:
           name: allure-report-folder
           path: ./downloaded-artifacts
 
-      - name: Debug downloaded artifacts
-        run: |
-          echo "--- Downloaded artifacts tree ---"
-          sudo apt-get install -y tree
-          tree ./downloaded-artifacts
-
       - name: Install jq (if necessary)
         run: |
           if ! command -v jq &> /dev/null; then
@@ -226,21 +220,6 @@ jobs:
             echo "FAILED_MESSAGES=[]" >> $GITHUB_ENV
           fi
 
-      - name: Debug extracted test details
-        run: |
-          echo "Debugging extracted Allure metrics..."
-          echo "TOTAL_SCENARIOS=$TOTAL_SCENARIOS"
-          echo "PASSED=$PASSED"
-          echo "FAILED=$FAILED"
-          echo "SKIPPED=$SKIPPED"
-          echo "BROKEN=$BROKEN"
-          echo "UNKNOWN=$UNKNOWN"
-          echo "DURATION=$DURATION"
-          echo "PASS_RATE=$PASS_RATE"
-          echo "EXECUTION_DATETIME=$EXECUTION_DATETIME"
-          echo "HAS_FAILED_TESTS=$HAS_FAILED_TESTS"
-          echo "FAILED_TESTS=$FAILED_TESTS"
-
       - name: Generate Email Body
         id: generate-email-body
         run: |
@@ -258,29 +237,26 @@ jobs:
             <h2 style="color:#2c3e50;">Flipkart Regression - Run #${{ github.run_number }}</h2>
 
             <div style="display:flex;gap:20px;">
-              <div>
-                <img src="https://quickchart.io/chart?c={
-                  type:'doughnut',
-                  data:{
-                    labels:['Passed','Failed','Skipped','Broken'],
-                    datasets:[{
-                      data:[${{ env.PASSED || 0 }},${{ env.FAILED || 0 }},${{ env.SKIPPED || 0 }},${{ env.BROKEN || 0 }}],
-                      backgroundColor:['#97cc64','#fd5a3e','#aaa','#ffd050']
-                    }]
-                  }
-                }" width="300">
+              <div style="max-width: 48%; width: fit-content; text-align: left;">
+                <img src="https://quickchart.io/chart?c=%7B%22type%22%3A%22doughnut%22%2C%22data%22%3A%7B%22labels%22%3A%5B%22Passed%22%2C%22Failed%22%2C%22Skipped%22%2C%22Broken%22%2C%22Unknown%22%5D%2C%22datasets%22%3A%5B%7B%22data%22%3A%5B${{ env.PASSED }}%2C${{ env.FAILED }}%2C${{ env.SKIPPED }}%2C${{ env.BROKEN }}%2C${{ env.UNKNOWN }}%5D%2C%22backgroundColor%22%3A%5B%22%2397cc64%22%2C%22%23fd5a3e%22%2C%22%23aaa%22%2C%22%23ffd050%22%2C%22%23d35ebe%22%5D%7D%5D%7D%2C%22options%22%3A%7B%22plugins%22%3A%7B%22doughnutlabel%22%3A%7B%22labels%22%3A%5B%7B%22text%22%3A%22${{ env.PASS_RATE }}%25%20Passed%22%2C%22font%22%3A%7B%22size%22%3A20%2C%22weight%22%3A%22bold%22%2C%22color%22%3A%22%23ffffff%22%7D%7D%5D%7D%7D%7D%7D" alt="Test Results Doughnut Chart" width="450">
               </div>
 
-              <div style="background:#fff;padding:15px;border:1px solid #ddd;border-radius:8px;">
-                <p><b>Total Scenarios:</b> $TOTAL_SCENARIOS</p>
-                <p>✅ <b>Passed:</b> $PASSED</p>
-                <p>❌ <b>Failed:</b> $FAILED</p>
-                <p>⏸️ <b>Skipped:</b> $SKIPPED</p>
-                <p>🐛 <b>Broken:</b> $BROKEN</p>
-                <p>🌐 <b>Environment:</b> ${ENVIRONMENT:-DEV}</p>
-                <p>🕒 <b>Test Duration:</b> $DURATION</p>
+            <div style="max-width: 48%; width: fit-content; background-color: #fff; padding: 20px; border: 1px solid #ddd; border-radius: 8px; text-align: left;">         
+              <div style="flex: 1; margin-bottom: 20px;">
+                <p style="font-size: 14px; margin: 5px 0;"><strong>Total Scenarios:</strong> ${{ env.TOTAL_SCENARIOS }}</p>
+                <p style="font-size: 14px; margin: 5px 0;">✅ <strong>Passed:</strong> ${{ env.PASSED }}</p>
+                <p style="font-size: 14px; margin: 5px 0;">❌ <strong>Failed:</strong> ${{ env.FAILED }}</p>
+                <p style="font-size: 14px; margin: 5px 0;">⏸️ <strong>Skipped:</strong> ${{ env.SKIPPED }}</p>
+                <p style="font-size: 14px; margin: 5px 0;">🐛 <strong>Broken:</strong> ${{ env.BROKEN }}</p>
+                <p style="font-size: 14px; margin: 5px 0;">❓ <strong>Unknown:</strong> ${{ env.UNKNOWN }}</p>
               </div>
+            <div style="flex: 1; margin-bottom: 20px;">           
+                <p style="font-size: 14px; margin: 5px 0;">🌐 <strong>Environment:</strong> ${{ inputs.ENV }}</p>
+                <p style="font-size: 14px; margin: 5px 0;">🧪 <strong>Test Suite:</strong> ${{ inputs.TEST_SUITE }}</p>
+                <p style="font-size: 14px; margin: 5px 0;">⏰ <strong>Execution Datetime:</strong> ${{ env.EXECUTION_DATETIME }}</p>
+                <p style="font-size: 14px; margin: 5px 0;">📝 <strong>Test Duration:</strong> ${{ env.DURATION }}</p>
             </div>
+          </div>
 
             <hr style="margin:20px 0;">
 
