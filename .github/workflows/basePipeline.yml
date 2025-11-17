@@ -182,7 +182,7 @@ jobs:
         run: |
           set -e
 
-          SUMMARY=$(jq -e '{total: .statistic.total, passed: .statistic.passed, failed: .statistic.failed, skipped: .statistic.skipped, broken: .statistic.broken, unknown: .statistic.unknown, duration: .time.duration | tostring}' ./downloaded-artifacts/widgets/summary.json || echo '{}')
+          SUMMARY=$(jq -e '{total: .statistic.total, passed: .statistic.passed, failed: .statistic.failed, skipped: .statistic.skipped, broken: .statistic.broken, unknown: .statistic.unknown, duration: .time.duration | tostring}' ./downloaded-artifacts/${{ github.run_number }}/widgets/summary.json || echo '{}')
 
           DURATION_MS=$(echo $SUMMARY | jq -r .duration)
           DURATION=$((DURATION_MS / 1000))
@@ -216,8 +216,8 @@ jobs:
           echo "PASS_RATE=$PASS_RATE" >> $GITHUB_ENV
 
           if [ "$FAILED" -gt 0 ]; then
-            FAILED_TESTS=$(jq -e '[.. | select(.name? | type == "string" and contains(".")) | {test: .name, test_cases: [.children[]? | select(.status == "failed") | .name]}] | map(select(.test_cases | length > 0))' ./downloaded-artifacts/data/suites.json || echo '[]')
-            jq -e '[.. | select(.name? | type == "string" and contains(".")) | {error_message: .name, "test_case": ([.children[]?.name])}]' ./downloaded-artifacts/data/categories.json > failed_messages.json || echo '[]' > failed_messages.json
+            FAILED_TESTS=$(jq -e '[.. | select(.name? | type == "string" and contains(".")) | {test: .name, test_cases: [.children[]? | select(.status == "failed") | .name]}] | map(select(.test_cases | length > 0))' ./downloaded-artifacts/${{ github.run_number }}/data/suites.json || echo '[]')
+            jq -e '[.. | select(.name? | type == "string" and contains(".")) | {error_message: .name, "test_case": ([.children[]?.name])}]' ./downloaded-artifacts/${{ github.run_number }}/data/categories.json > failed_messages.json || echo '[]' > failed_messages.json
             echo "HAS_FAILED_TESTS=true" >> $GITHUB_ENV
             echo "FAILED_TESTS=$(echo "$FAILED_TESTS" | jq -c .)" >> $GITHUB_ENV
           else
