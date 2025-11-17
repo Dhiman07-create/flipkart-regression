@@ -80,7 +80,7 @@ jobs:
             echo "No failed tests to rerun."
             exit 0
           fi
-            
+          
           sed -E -i 's/thread-count="[0-9]+"/thread-count="${{ inputs.RERUN_FAILED_TESTS_THREADS }}"/g; s/name="Failed suite \[(.*?)\]"/name="\1"/g; s/\(failed\)//g' target/surefire-reports/testng-failed.xml
           mvn verify -q -Dsurefire.suiteXmlFiles=target/surefire-reports/testng-failed.xml -Denv=${{ inputs.ENV }} -Dselenide.headless=true -s settings.xml
         continue-on-error: true
@@ -257,9 +257,9 @@ jobs:
                 <p style="font-size: 14px; margin: 5px 0;">📝 <strong>Test Duration:</strong> ${{ env.DURATION }}</p>
             </div>
           </div>
-
-            <hr style="margin:20px 0;">
-
+          EOF
+          )
+            EMAIL_BODY="$EMAIL_BODY
             <div style="text-align:center;">
               <a href="$REPORT_URL" style="background:#3498db;color:#fff;padding:12px 24px;text-decoration:none;border-radius:5px;margin:0 10px;">View Full Report</a>
               <a href="$RUN_URL" style="background:#2ecc71;color:#fff;padding:12px 24px;text-decoration:none;border-radius:5px;margin:0 10px;">GitHub Action Run</a>
@@ -269,10 +269,8 @@ jobs:
               <p>&copy; 2025 Flipkart Regression Automation</p>
             </div>
           </body>
-          </html>
-          EOF
-          )
-
+          </html>"
+          
           echo "EMAIL_BODY<<EOF" >> $GITHUB_ENV
           echo "$EMAIL_BODY" >> $GITHUB_ENV
           echo "EOF" >> $GITHUB_ENV
