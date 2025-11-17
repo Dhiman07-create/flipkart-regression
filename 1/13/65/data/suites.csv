@@ -1,2 +1,0 @@
-"Status","Start Time","Stop Time","Duration in ms","Parent Suite","Suite","Sub Suite","Test Class","Test Method","Name","Description"
-"passed","Tue Oct 07 03:00:46 UTC 2025","Tue Oct 07 03:00:59 UTC 2025","13178","Flipkart Regression Suite","Regression Tests","tests.RegressionTest","tests.RegressionTest","testSearchProduct","testSearchProduct",""
