@@ -85,6 +85,12 @@ jobs:
           mvn verify -q -Dsurefire.suiteXmlFiles=target/surefire-reports/testng-failed.xml -Denv=${{ inputs.ENV }} -Dselenide.headless=true -s settings.xml
         continue-on-error: true
 
+      - name: Set Allure env properties
+        continue-on-error: true
+        run: |
+          echo "env=${{ inputs.ENV }}" >> ./target/allure-results/environment.properties
+          echo "testSuite=${{ inputs.TEST_SUITE }}" >> ./target/allure-results/environment.properties
+
       - name: Checkout gh-pages for history
         uses: actions/checkout@v4
         with:
@@ -106,7 +112,7 @@ jobs:
         with:
           allure-results: ./target/allure-results
           website: gh-pages
-          reports-site-path: ${{ env.FILENAME }}
+          reports-site-path: ${{ inputs.ENV }}/${{ env.FILENAME }}
           max-reports: 10
 
       - name: Deploy Allure report to GitHub Pages
@@ -115,8 +121,8 @@ jobs:
         with:
           github_token: ${{ secrets.GITHUB_TOKEN }}
           publish_branch: gh-pages
-          publish_dir: ./gh-pages
-          destination_dir: ${{ github.run_number }}
+          publish_dir: ${{ steps.allure-report.outputs.reports-site }}
+          destination_dir: ${{ steps.allure-report.outputs.reports-site-path }}
 
       - name: Construct Report Path
         id: construct-path
@@ -145,7 +151,7 @@ jobs:
         with:
           name: allure-report-folder
           path: ./gh-pages/${{ env.REPORT_PATH }}
-          retention-days: 3
+          retention-days: 1
 
   send-email:
     needs: execute-tests-and-generate-report
