@@ -164,6 +164,12 @@ jobs:
           name: allure-report-folder
           path: ./downloaded-artifacts
 
+      - name: Debug downloaded artifacts
+        run: |
+          echo "--- Downloaded artifacts tree ---"
+          sudo apt-get install -y tree
+          tree ./downloaded-artifacts
+
       - name: Install jq (if necessary)
         run: |
           if ! command -v jq &> /dev/null; then
