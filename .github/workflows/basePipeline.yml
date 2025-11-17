@@ -40,6 +40,8 @@ jobs:
       pages: write        # ✅ required for Pages
       id-token: write     # ✅ required for OIDC authentication
       issues: write
+    env:
+      FILENAME: testng
     timeout-minutes: 300
     outputs:
       report-path: ${{ steps.construct_path.outputs.report-path }}
