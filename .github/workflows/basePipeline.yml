@@ -40,8 +40,6 @@ jobs:
       pages: write        # ✅ required for Pages
       id-token: write     # ✅ required for OIDC authentication
       issues: write
-    env:
-      FILENAME: testng
     timeout-minutes: 300
     outputs:
       report-path: ${{ steps.construct_path.outputs.report-path }}
@@ -240,7 +238,7 @@ jobs:
       - name: Generate Email Body
         id: generate-email-body
         run: |
-          REPORT_URL="https://${{ github.repository_owner }}.github.io/${{ github.event.repository.name }}/${{ inputs.ENV }}/${{ env.FILENAME }}/${{ github.run_number }}/"
+          REPORT_URL="https://${{ github.repository_owner }}.github.io/${{ github.event.repository.name }}/${{ inputs.ENV }}/testng/${{ github.run_number }}/"
           RUN_URL="${{ github.server_url }}/${{ github.repository }}/actions/runs/${{ github.run_id }}"
 
           EMAIL_BODY=$(cat <<EOF
