@@ -229,18 +229,17 @@ jobs:
           EMAIL_BODY=$(cat <<EOF
           <!DOCTYPE html>
           <html>
-          <head>
+           <head>
             <meta charset="UTF-8">
-            <title>Test Summary Report</title>
-          </head>
-          <body style="font-family: Arial, sans-serif; background:#f7f9fc; padding:20px;">
-            <h2 style="color:#2c3e50;">Flipkart Regression - Run #${{ github.run_number }}</h2>
-
-            <div style="display:flex;gap:20px;">
+            <meta name="viewport" content="width=device-width, initial-scale=1.0">
+            <title>{{inputs.ALLURE_REPORT_NAME}} Test Summary Report</title>
+           </head>
+           <body style="font-family: 'Roboto', Arial, sans-serif; color: #333; margin: 0; padding: 20px; background-color: #f7f9fc;">
+            <h2 style="color: #2c3e50; font-size: 28px; margin-bottom: 20px; font-weight: 600;">Flipkart Regression - Run #${{ github.run_number }}</h2>
+            <div style="display: flex; margin-top: 20px;">
               <div style="max-width: 48%; width: fit-content; text-align: left;">
                 <img src="https://quickchart.io/chart?c=%7B%22type%22%3A%22doughnut%22%2C%22data%22%3A%7B%22labels%22%3A%5B%22Passed%22%2C%22Failed%22%2C%22Skipped%22%2C%22Broken%22%2C%22Unknown%22%5D%2C%22datasets%22%3A%5B%7B%22data%22%3A%5B${{ env.PASSED }}%2C${{ env.FAILED }}%2C${{ env.SKIPPED }}%2C${{ env.BROKEN }}%2C${{ env.UNKNOWN }}%5D%2C%22backgroundColor%22%3A%5B%22%2397cc64%22%2C%22%23fd5a3e%22%2C%22%23aaa%22%2C%22%23ffd050%22%2C%22%23d35ebe%22%5D%7D%5D%7D%2C%22options%22%3A%7B%22plugins%22%3A%7B%22doughnutlabel%22%3A%7B%22labels%22%3A%5B%7B%22text%22%3A%22${{ env.PASS_RATE }}%25%20Passed%22%2C%22font%22%3A%7B%22size%22%3A20%2C%22weight%22%3A%22bold%22%2C%22color%22%3A%22%23ffffff%22%7D%7D%5D%7D%7D%7D%7D" alt="Test Results Doughnut Chart" width="450">
               </div>
-
             <div style="max-width: 48%; width: fit-content; background-color: #fff; padding: 20px; border: 1px solid #ddd; border-radius: 8px; text-align: left;">         
               <div style="flex: 1; margin-bottom: 20px;">
                 <p style="font-size: 14px; margin: 5px 0;"><strong>Total Scenarios:</strong> ${{ env.TOTAL_SCENARIOS }}</p>
@@ -250,34 +249,68 @@ jobs:
                 <p style="font-size: 14px; margin: 5px 0;">🐛 <strong>Broken:</strong> ${{ env.BROKEN }}</p>
                 <p style="font-size: 14px; margin: 5px 0;">❓ <strong>Unknown:</strong> ${{ env.UNKNOWN }}</p>
               </div>
-            <div style="flex: 1; margin-bottom: 20px;">           
+              <div style="flex: 1; margin-bottom: 20px;">           
                 <p style="font-size: 14px; margin: 5px 0;">🌐 <strong>Environment:</strong> ${{ inputs.ENV }}</p>
                 <p style="font-size: 14px; margin: 5px 0;">🧪 <strong>Test Suite:</strong> ${{ inputs.TEST_SUITE }}</p>
                 <p style="font-size: 14px; margin: 5px 0;">⏰ <strong>Execution Datetime:</strong> ${{ env.EXECUTION_DATETIME }}</p>
                 <p style="font-size: 14px; margin: 5px 0;">📝 <strong>Test Duration:</strong> ${{ env.DURATION }}</p>
+              </div>
             </div>
           </div>
-
-            <hr style="margin:20px 0;">
-
-            <hr style="margin:20px 0;">
-  
-           <!-- BUTTON WRAPPER -->
-           <div style="width:100%; text-align:center; margin-top:20px; margin-bottom:30px;">
-
-           <a href="$REPORT_URL"style="display:inline-block; background:#3498db; color:#fff; padding:12px 24px; text-decoration:none; border-radius:5px; margin:0 10px; font-weight:bold;">View Full Report</a>
-
-           <a href="$RUN_URL"style="display:inline-block; background:#2ecc71; color:#fff; padding:12px 24px; text-decoration:none; border-radius:5px; margin:0 10px; font-weight:bold;">GitHub Action Run</a>
-  
-           </div>
-  
-           <!-- FOOTER TEXT (SEPARATE BLOCK) -->
-           <div style="width:100%; text-align:center; margin-top:40px; font-size:12px; color:#888;">© 2025 Flipkart Regression Automation</div>
-          </body>
-          </html>
           EOF
           )
-
+          
+          if [ "${{ env.HAS_FAILED_TESTS }}" = "true" ]; then
+            FAILED_TESTS_TABLE="<h3 style='font-size: 20px; color: #2c3e50;'>Failed Tests:</h3><table style='width: 100%; border: 1px solid #ddd; border-collapse: collapse; margin-top: 20px;'>"
+            FAILED_TESTS_TABLE="$FAILED_TESTS_TABLE<tr style='background-color: #f2f2f2; text-align: left;'>
+              <th style='padding: 8px; border: 1px solid #ddd;'>Test Suite</th>
+              <th style='padding: 8px; border: 1px solid #ddd;'>Test Name</th>
+              <th style='padding: 8px; border: 1px solid #ddd;'>Error Message</th>
+            </tr>"
+          
+            IFS=$'\n'
+            for test in $(echo '${{ env.FAILED_TESTS }}' | jq -c '.[]'); do
+              TEST_SUITE=$(echo "$test" | jq -r '.test')
+              TEST_CASES=$(echo "$test" | jq -r '.test_cases[]')
+          
+              FAILED_MESSAGES=$(cat failed_messages.json)
+          
+              FIRST_ROW=true
+              for TEST_CASE in $TEST_CASES; do
+                ERROR_MESSAGE=$(echo "$FAILED_MESSAGES" | jq -r --arg TEST_CASE "$TEST_CASE" '.[] | select(.test_case | index($TEST_CASE)) | .error_message')
+                if [ "$FIRST_ROW" = "true" ]; then
+                  FAILED_TESTS_TABLE="$FAILED_TESTS_TABLE
+                  <tr style='background-color: #ffffff;'>
+                    <td style='padding: 8px; border: 1px solid #ddd;' rowspan=\"$(echo "$TEST_CASES" | wc -l)\">$TEST_SUITE</td>
+                    <td style='padding: 8px; border: 1px solid #ddd;'>$TEST_CASE</td>
+                    <td style='padding: 8px; border: 1px solid #ddd;'>$ERROR_MESSAGE</td>
+                  </tr>"
+                  FIRST_ROW=false
+                else
+                  FAILED_TESTS_TABLE="$FAILED_TESTS_TABLE
+                  <tr style='background-color: #ffffff;'>
+                    <td style='padding: 8px; border: 1px solid #ddd;'>$TEST_CASE</td>
+                    <td style='padding: 8px; border: 1px solid #ddd;'>$ERROR_MESSAGE</td>
+                  </tr>"
+                fi
+              done
+            done
+          
+            FAILED_TESTS_TABLE="$FAILED_TESTS_TABLE</table>"
+            EMAIL_BODY="$EMAIL_BODY$FAILED_TESTS_TABLE"
+          fi
+          
+          EMAIL_BODY="$EMAIL_BODY
+            <div style=\"text-align: center; margin-top: 20px;\">
+              <a href="$REPORT_URL" style="background:#3498db;color:#fff;padding:12px 24px;text-decoration:none;border-radius:5px;margin:0 10px;">View Full Report</a>
+              <a href="$RUN_URL" style="background:#2ecc71;color:#fff;padding:12px 24px;text-decoration:none;border-radius:5px;margin:0 10px;">GitHub Action Run</a>
+            </div>
+            <div style=\"margin-top: 30px; font-size: 12px; color: #888; text-align: center;\">
+              <p>&copy; © 2025 Flipkart Regression Automation</p>
+            </div>
+            </body>
+          </html>"
+          
           echo "EMAIL_BODY<<EOF" >> $GITHUB_ENV
           echo "$EMAIL_BODY" >> $GITHUB_ENV
           echo "EOF" >> $GITHUB_ENV
