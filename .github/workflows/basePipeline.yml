@@ -226,7 +226,7 @@ jobs:
           REPORT_URL="https://${{ github.repository_owner }}.github.io/${{ github.event.repository.name }}/${{ inputs.ENV }}/testng/${{ github.run_number }}/"
           RUN_URL="${{ github.server_url }}/${{ github.repository }}/actions/runs/${{ github.run_id }}"
 
-          EMAIL_BODY=$(cat <<EOF
+          EMAIL_BODY=$(cat <<'EOF'
           <!DOCTYPE html>
           <html>
            <head>
@@ -302,8 +302,8 @@ jobs:
           
           EMAIL_BODY="$EMAIL_BODY
             <div style=\"text-align: center; margin-top: 20px;\">
-              <a href="$REPORT_URL" style="background:#3498db;color:white;padding:12px 24px;text-decoration:none;border-radius:5px;margin:0 10px;">View Full Report</a>
-              <a href="$RUN_URL" style="background:#2ecc71;color:white;padding:12px 24px;text-decoration:none;border-radius:5px;margin:0 10px;">GitHub Action Run</a>
+              <a href="$REPORT_URL" style="background:#3498db;color:#fff;padding:12px 24px;text-decoration:none;border-radius:5px;margin:0 10px;">View Full Report</a>
+              <a href="$RUN_URL" style="background:#2ecc71;color:#fff;padding:12px 24px;text-decoration:none;border-radius:5px;margin:0 10px;">GitHub Action Run</a>
             </div>
             <div style=\"margin-top: 30px; font-size: 12px; color: #888; text-align: center;\">
               <p>&copy; © 2025 Flipkart Regression Automation</p>
