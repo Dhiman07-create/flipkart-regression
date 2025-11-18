@@ -246,7 +246,7 @@ jobs:
                 <p style="font-size: 14px; margin: 5px 0;">✅ <strong>Passed:</strong> ${{ env.PASSED }}</p>
                 <p style="font-size: 14px; margin: 5px 0;">❌ <strong>Failed:</strong> ${{ env.FAILED }}</p>
                 <p style="font-size: 14px; margin: 5px 0;">⏭️ <strong>Skipped:</strong> ${{ env.SKIPPED }}</p>
-                <p style="font-size: 14px; margin: 5px 0;">‼️ <strong>Broken:</strong> ${{ env.BROKEN }}</p>
+                <p style="font-size: 14px; margin: 5px 0;">🎗️ <strong>Broken:</strong> ${{ env.BROKEN }}</p>
                 <p style="font-size: 14px; margin: 5px 0;">❓ <strong>Unknown:</strong> ${{ env.UNKNOWN }}</p>
               </div>
               <div style="flex: 1; margin-bottom: 20px;">           
