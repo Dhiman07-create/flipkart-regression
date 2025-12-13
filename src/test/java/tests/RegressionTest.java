@@ -17,7 +17,7 @@ import static com.codeborne.selenide.Selenide.open;
 public class RegressionTest extends BaseTest {
 
     @Test
-    public void testSearchProduct() {
+    public void tc01_testSearchProduct() {
         open("https://www.flipkart.com");
         HomePage homePage = new HomePage();
         SearchResults results = homePage.search("iPhone 14");
