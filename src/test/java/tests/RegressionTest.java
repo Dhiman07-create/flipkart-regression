@@ -78,11 +78,31 @@ public class RegressionTest extends BaseTest {
     }
 
     @Test
-    public void tc05_verifySearchBarOnHomePage() {
+    public void tc05_verifySearchBarValid() {
         open("https://www.flipkart.com");
         HomePage homePage = new HomePage();
         SearchResults results = homePage.search("iPhone 17");
         results.verifyResultsContain("iPhone 17");
+    }
+
+    @Test
+    public void tc06_verifySearchBarSmartSuggestions() {
+        open("https://www.flipkart.com");
+        HomePage homePage = new HomePage();
+        SearchResults results = homePage.search("iPhon 17");
+        results.verifySmartSuggestionAlt();
+        results.verifyResultsContain("iPhone 17");
+    }
+
+    @Test
+    public void tc07_verifySearchFilters() {
+        open("https://www.flipkart.com");
+        HomePage homePage = new HomePage();
+        SearchResults results = homePage.search("Laptop");
+        results.applyBrandFilter();
+        results.applyPriceFilter("₹50000", "₹75000");
+        results.verifyBrandFiltered("HP");
+        results.verifyPriceRange(5000, 10000);
     }
 
 //    @Test
