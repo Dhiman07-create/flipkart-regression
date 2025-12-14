@@ -2,6 +2,7 @@ package pages;
 
 import com.codeborne.selenide.SelenideElement;
 import io.qameta.allure.Step;
+import org.openqa.selenium.By;
 
 import java.time.Duration;
 
@@ -13,7 +14,7 @@ public class HomePage {
             $x("//span[text()='Login']");
 
     private final SelenideElement searchBar =
-            $x("//input[name='q']");
+            $x("//input[@name='q']");
 
     @Step()
     public SearchResults search(String query) {
