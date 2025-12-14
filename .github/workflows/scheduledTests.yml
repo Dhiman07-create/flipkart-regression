@@ -2,7 +2,7 @@ name: Flipkart Scheduled Tests
 
 on:
   schedule:
-    - cron: "0 2 * * *" # every day at 2AM UTC
+    - cron: "0 1 * * *" # every day at 2AM UTC
 
 permissions:
   contents: write

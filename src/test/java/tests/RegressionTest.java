@@ -100,9 +100,9 @@ public class RegressionTest extends BaseTest {
         HomePage homePage = new HomePage();
         SearchResults results = homePage.search("Laptop");
         results.applyBrandFilter();
-        results.applyPriceFilter("₹50000", "₹75000");
         results.verifyBrandFiltered("HP");
-        results.verifyPriceRange(5000, 10000);
+        results.applyPriceFilter("₹50000", "₹75000");
+        results.verifyPriceRange(50000, 75000);
     }
 
 //    @Test
