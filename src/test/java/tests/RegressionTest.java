@@ -2,30 +2,19 @@ package tests;
 
 import base.BaseTest;
 import io.qameta.allure.Allure;
-import io.qameta.allure.Step;
-import io.qameta.allure.testng.AllureTestNg;
-import org.testng.annotations.Listeners;
 import org.testng.annotations.Test;
 import pages.HomePage;
 import pages.LoginPage;
 import pages.SearchResults;
 
-import static com.codeborne.selenide.Condition.visible;
-import static com.codeborne.selenide.Selenide.$x;
-import static com.codeborne.selenide.Selenide.open;
+import java.util.NoSuchElementException;
+
+import static com.codeborne.selenide.Selenide.*;
 
 public class RegressionTest extends BaseTest {
 
     @Test
-    public void tc01_testSearchProduct() {
-        open("https://www.flipkart.com");
-        HomePage homePage = new HomePage();
-        SearchResults results = homePage.search("iPhone 14");
-        results.verifyResultsContain("iPhone 14");
-    }
-
-    @Test
-    public void tc02_validLogin()
+    public void tc01_validLogin()
     {
         open("https://www.flipkart.com");
         HomePage homePage = new HomePage();
@@ -38,7 +27,7 @@ public class RegressionTest extends BaseTest {
     }
 
     @Test
-    public void tc03inValidLogin()
+    public void tc02_inValidLogin()
     {
         open("https://www.flipkart.com");
         HomePage homePage = new HomePage();
@@ -47,6 +36,53 @@ public class RegressionTest extends BaseTest {
         loginPage.enterEmailOrMobile("dokago7765@naqulu.com");
         loginPage.clickRequestOtp();
         loginPage.verifyUnregisteredMessageVisible();
+    }
+
+    @Test
+    public void tc03_verifyTopNavigationMenus() {
+        open("https://www.flipkart.com");
+        HomePage homePage = new HomePage();
+        homePage.verifyFlipkartMinutesVisible();
+        homePage.verifyMobilesAndTabletsVisible();
+        homePage.verifyFashionVisible();
+        homePage.verifyElectronicsVisible();
+        homePage.verifyTvsAndAppliancesVisible();
+        homePage.verifyHomeAndFurnitureVisible();
+        homePage.verifyFlightBookingsVisible();
+        homePage.verifyBeautyFoodVisible();
+        homePage.verifyGroceryVisible();
+    }
+
+    @Test
+    public void tc04_verifyProductCategoryNavigation() {
+        open("https://www.flipkart.com");
+        HomePage homePage = new HomePage();
+        homePage.verifyFlipkartMinutesVisible();
+        homePage.verifyFlipkartMinutesLanding();
+        back();
+        try {
+            homePage.closeLoginPopup();
+            homePage.hoverOnMobilesAndTablets();
+        }
+        catch (NoSuchElementException | org.openqa.selenium.WebDriverException | com.codeborne.selenide.ex.ElementNotFound e)
+        {
+            Allure.step("Login popup not present, continuing test execution");
+        }
+        homePage.verifyMobilesAndTabletsVisible();
+        homePage.verifyMobilesAndTabletsLanding();
+        back();
+        homePage.verifyElectronicsVisible();
+        homePage.hoverOnElectronics();
+        homePage.verifyElectronicsLanding();
+        back();
+    }
+
+    @Test
+    public void tc05_verifySearchBarOnHomePage() {
+        open("https://www.flipkart.com");
+        HomePage homePage = new HomePage();
+        SearchResults results = homePage.search("iPhone 17");
+        results.verifyResultsContain("iPhone 17");
     }
 
 //    @Test
