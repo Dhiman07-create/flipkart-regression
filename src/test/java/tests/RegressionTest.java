@@ -28,8 +28,6 @@ public class RegressionTest extends BaseTest {
     public void tc02_validLogin()
     {
         open("https://www.flipkart.com");
-        Allure.step("STEP ONE");
-        Allure.step("STEP TWO");
         HomePage homePage = new HomePage();
         homePage.clickOnLogin();
         LoginPage loginPage = new LoginPage();
@@ -44,8 +42,6 @@ public class RegressionTest extends BaseTest {
     {
         open("https://www.flipkart.com");
         HomePage homePage = new HomePage();
-        Allure.step("STEP ONE");
-        Allure.step("STEP TWO");
         homePage.clickOnLogin();
         LoginPage loginPage = new LoginPage();
         loginPage.enterEmailOrMobile("dokago7765@naqulu.com");
