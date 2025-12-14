@@ -26,7 +26,7 @@ public class LoginPage {
             $x("//button[contains(text(),'Verify')]");
 
     private final SelenideElement unregisteredMessage =
-            $x("//div[contains(text(),'You are registered with us. Please sign up.')]");
+            $x("//div[contains(text(),'You are not registered with us. Please sign up.')]");
 
     @Step("Verify Login popup is displayed")
     public void verifyLoginPopupVisible() {
