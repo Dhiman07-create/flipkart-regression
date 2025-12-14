@@ -8,6 +8,7 @@ import io.qameta.allure.testng.AllureTestNg;
 import org.testng.annotations.Listeners;
 import org.testng.annotations.Test;
 import pages.HomePage;
+import pages.LoginPage;
 import pages.SearchResults;
 
 import static com.codeborne.selenide.Condition.visible;
@@ -22,6 +23,31 @@ public class RegressionTest extends BaseTest {
         HomePage homePage = new HomePage();
         SearchResults results = homePage.search("iPhone 14");
         results.verifyResultsContain("iPhone 14");
+    }
+
+    @Test
+    public void tc02_validLogin()
+    {
+        open("https://www.flipkart.com");
+        HomePage homePage = new HomePage();
+        homePage.clickOnLogin();
+        LoginPage loginPage = new LoginPage();
+        loginPage.enterEmailOrMobile("dasguptadhiman9@gmail.com");
+        loginPage.clickRequestOtp();
+        loginPage.verifyOtpScreenDisplayed();
+        loginPage.verifyVerifyButtonVisible();
+    }
+
+    @Test
+    public void tc03inValidLogin()
+    {
+        open("https://www.flipkart.com");
+        HomePage homePage = new HomePage();
+        homePage.clickOnLogin();
+        LoginPage loginPage = new LoginPage();
+        loginPage.enterEmailOrMobile("dokago7765@naqulu.com");
+        loginPage.clickRequestOtp();
+        loginPage.verifyUnregisteredMessageVisible();
     }
 
 //    @Test
