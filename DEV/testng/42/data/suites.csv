@@ -1,0 +1,4 @@
+"DESCRIPTION","DURATION IN MS","NAME","PARENT SUITE","START TIME","STATUS","STOP TIME","SUB SUITE","SUITE","TEST CLASS","TEST METHOD"
+"","12569","tc03inValidLogin","Flipkart Regression Suite","Sun Dec 14 09:21:14 GMT 2025","failed","Sun Dec 14 09:21:27 GMT 2025","tests.RegressionTest","Regression Tests","tests.RegressionTest","tc03inValidLogin"
+"","10972","tc01_testSearchProduct","Flipkart Regression Suite","Sun Dec 14 09:20:50 GMT 2025","passed","Sun Dec 14 09:21:01 GMT 2025","tests.RegressionTest","Regression Tests","tests.RegressionTest","tc01_testSearchProduct"
+"","13341","tc02_validLogin","Flipkart Regression Suite","Sun Dec 14 09:21:01 GMT 2025","failed","Sun Dec 14 09:21:14 GMT 2025","tests.RegressionTest","Regression Tests","tests.RegressionTest","tc02_validLogin"
