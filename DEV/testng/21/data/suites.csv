@@ -1,2 +1,0 @@
-"DESCRIPTION","DURATION IN MS","NAME","PARENT SUITE","START TIME","STATUS","STOP TIME","SUB SUITE","SUITE","TEST CLASS","TEST METHOD"
-"","23994","testSearchProduct","Flipkart Regression Suite","Sun Dec 07 03:41:02 GMT 2025","failed","Sun Dec 07 03:41:26 GMT 2025","tests.RegressionTest","Regression Tests","tests.RegressionTest","testSearchProduct"
