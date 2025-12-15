@@ -1,0 +1,8 @@
+"DESCRIPTION","DURATION IN MS","NAME","PARENT SUITE","START TIME","STATUS","STOP TIME","SUB SUITE","SUITE","TEST CLASS","TEST METHOD"
+"","3419","tc03_verifyTopNavigationMenus","Flipkart Regression Suite","Mon Dec 15 04:44:10 GMT 2025","passed","Mon Dec 15 04:44:14 GMT 2025","tests.RegressionTest","Regression Tests","tests.RegressionTest","tc03_verifyTopNavigationMenus"
+"","12051","tc07_verifySearchFilters","Flipkart Regression Suite","Mon Dec 15 04:44:40 GMT 2025","failed","Mon Dec 15 04:44:52 GMT 2025","tests.RegressionTest","Regression Tests","tests.RegressionTest","tc07_verifySearchFilters"
+"","5310","tc05_verifySearchBarValid","Flipkart Regression Suite","Mon Dec 15 04:44:29 GMT 2025","passed","Mon Dec 15 04:44:35 GMT 2025","tests.RegressionTest","Regression Tests","tests.RegressionTest","tc05_verifySearchBarValid"
+"","15536","tc04_verifyProductCategoryNavigation","Flipkart Regression Suite","Mon Dec 15 04:44:14 GMT 2025","passed","Mon Dec 15 04:44:29 GMT 2025","tests.RegressionTest","Regression Tests","tests.RegressionTest","tc04_verifyProductCategoryNavigation"
+"","15910","tc01_validLogin","Flipkart Regression Suite","Mon Dec 15 04:43:48 GMT 2025","passed","Mon Dec 15 04:44:03 GMT 2025","tests.RegressionTest","Regression Tests","tests.RegressionTest","tc01_validLogin"
+"","6509","tc02_inValidLogin","Flipkart Regression Suite","Mon Dec 15 04:44:04 GMT 2025","passed","Mon Dec 15 04:44:10 GMT 2025","tests.RegressionTest","Regression Tests","tests.RegressionTest","tc02_inValidLogin"
+"","5437","tc06_verifySearchBarSmartSuggestions","Flipkart Regression Suite","Mon Dec 15 04:44:35 GMT 2025","passed","Mon Dec 15 04:44:40 GMT 2025","tests.RegressionTest","Regression Tests","tests.RegressionTest","tc06_verifySearchBarSmartSuggestions"
