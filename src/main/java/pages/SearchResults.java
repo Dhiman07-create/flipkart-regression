@@ -1,5 +1,6 @@
 package pages;
 
+import com.codeborne.selenide.CollectionCondition;
 import com.codeborne.selenide.ElementsCollection;
 import com.codeborne.selenide.SelenideElement;
 import io.qameta.allure.Step;
@@ -69,16 +70,21 @@ public class SearchResults {
     }
 
     @Step("Verify products are within selected price range")
-    public void verifyPriceRange(int min, int max) {
-        for (SelenideElement price : productPrices) {
-            String amount = price.getText()
-                    .replace("₹", "")
-                    .replace(",", "")
-                    .trim();
-
-            int value = Integer.parseInt(amount);
-            assert value >= min && value <= max :
-                    "Price out of range: " + value;
+    public void verifyPriceRange(int min, int max) throws InterruptedException {
+        Thread.sleep(2000);
+        productPrices
+                .filter(visible)
+                .shouldHave(CollectionCondition.sizeGreaterThan(0));
+        for (String priceText : productPrices.texts()) {
+            int value = Integer.parseInt(
+                    priceText.replace("₹", "")
+                            .replace(",", "")
+                            .trim()
+            );
+            org.testng.Assert.assertTrue(
+                    value >= min && value <= max,
+                    "Price out of range: " + value
+            );
         }
     }
 }

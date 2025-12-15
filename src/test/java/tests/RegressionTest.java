@@ -95,7 +95,7 @@ public class RegressionTest extends BaseTest {
     }
 
     @Test
-    public void tc07_verifySearchFilters() {
+    public void tc07_verifySearchFilters() throws InterruptedException {
         open("https://www.flipkart.com");
         HomePage homePage = new HomePage();
         SearchResults results = homePage.search("Laptop");
