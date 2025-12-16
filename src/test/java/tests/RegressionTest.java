@@ -113,4 +113,11 @@ public class RegressionTest extends BaseTest {
         plp.verifyProductCards();
     }
 
+    @Test
+    public void tc09_verifySortByPriceLowToHigh() throws InterruptedException {
+        open("https://www.flipkart.com/search?q=laptop");
+        ProductListingPage plp = new ProductListingPage();
+        plp.sortByPriceLowToHigh();
+        plp.verifyProductsSortedLowToHigh();
+    }
 }
