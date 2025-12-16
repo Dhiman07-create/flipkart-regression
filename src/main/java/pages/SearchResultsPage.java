@@ -4,13 +4,14 @@ import com.codeborne.selenide.CollectionCondition;
 import com.codeborne.selenide.ElementsCollection;
 import com.codeborne.selenide.SelenideElement;
 import io.qameta.allure.Step;
+import org.openqa.selenium.By;
 
 import static com.codeborne.selenide.CollectionCondition.sizeGreaterThan;
 import static com.codeborne.selenide.Condition.text;
 import static com.codeborne.selenide.Condition.visible;
 import static com.codeborne.selenide.Selenide.*;
 
-public class SearchResults {
+public class SearchResultsPage {
 
     private final SelenideElement smartSuggestion =
             $x("//span[contains(text(),'Show results for')]//a");
@@ -35,6 +36,14 @@ public class SearchResults {
 
     private final ElementsCollection productPrices =
             $$x("//div[@class='hZ3P6w DeU9vF']");
+
+    // All product cards on PLP
+    private final ElementsCollection productCards =
+            $$x("//div[@data-id]");
+
+    // Out of stock text inside product card
+    private final By outOfStockLabel =
+            By.xpath(".//*[contains(text(),'Out of Stock') or contains(text(),'Currently unavailable')]");
 
     @Step()
     public void verifyResultsContain(String keyword) {
@@ -86,5 +95,20 @@ public class SearchResults {
                     "Price out of range: " + value
             );
         }
+    }
+
+    @Step("Verify out-of-stock items are marked on PLP")
+    public void verifyOutOfStockItemsVisible() {
+        productCards.shouldHave(CollectionCondition.sizeGreaterThan(0));
+        boolean foundOutOfStock = false;
+        for (SelenideElement card : productCards) {
+            if (card.$(outOfStockLabel).exists()) {
+                card.$(outOfStockLabel).shouldBe(visible);
+                foundOutOfStock = true;
+                break;   // At least one is enough
+            }
+        }
+        assert foundOutOfStock :
+                "No out-of-stock product found on PLP";
     }
 }

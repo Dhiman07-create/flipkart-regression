@@ -6,7 +6,7 @@ import org.testng.annotations.Test;
 import pages.HomePage;
 import pages.LoginPage;
 import pages.ProductListingPage;
-import pages.SearchResults;
+import pages.SearchResultsPage;
 
 import java.util.NoSuchElementException;
 
@@ -82,7 +82,7 @@ public class RegressionTest extends BaseTest {
     public void tc05_verifySearchBarValid() {
         open("https://www.flipkart.com");
         HomePage homePage = new HomePage();
-        SearchResults results = homePage.search("iPhone 17");
+        SearchResultsPage results = homePage.search("iPhone 17");
         results.verifyResultsContain("iPhone 17");
     }
 
@@ -90,7 +90,7 @@ public class RegressionTest extends BaseTest {
     public void tc06_verifySearchBarSmartSuggestions() {
         open("https://www.flipkart.com");
         HomePage homePage = new HomePage();
-        SearchResults results = homePage.search("iPhon 17");
+        SearchResultsPage results = homePage.search("iPhon 17");
         results.verifySmartSuggestionAlt();
         results.verifyResultsContain("iPhone 17");
     }
@@ -99,7 +99,7 @@ public class RegressionTest extends BaseTest {
     public void tc07_verifySearchFilters() throws InterruptedException {
         open("https://www.flipkart.com");
         HomePage homePage = new HomePage();
-        SearchResults results = homePage.search("Laptop");
+        SearchResultsPage results = homePage.search("Laptop");
         results.applyBrandFilter();
         results.verifyBrandFiltered("HP");
         results.applyPriceFilter("₹50000", "₹75000");
@@ -130,5 +130,13 @@ public class RegressionTest extends BaseTest {
         plp.scrollToPagination();
         plp.clickNextPage();
         plp.verifyNextPageLoaded(initialProductCount);
+    }
+
+    @Test
+    public void tc11_verifyOutOfStockItemsOnPLP() {
+        open("https://www.flipkart.com");
+        HomePage homePage = new HomePage();
+        SearchResultsPage results = homePage.search("iphone");
+        results.verifyOutOfStockItemsVisible();
     }
 }

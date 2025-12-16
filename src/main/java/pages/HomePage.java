@@ -2,7 +2,6 @@ package pages;
 
 import com.codeborne.selenide.SelenideElement;
 import io.qameta.allure.Step;
-import org.openqa.selenium.By;
 
 import java.time.Duration;
 
@@ -63,9 +62,9 @@ public class HomePage {
             $x("//h1[text()='Audio & Video']");
 
     @Step()
-    public SearchResults search(String query) {
+    public SearchResultsPage search(String query) {
         searchBar.setValue(query).pressEnter();
-        return page(SearchResults.class);
+        return page(SearchResultsPage.class);
     }
 
     @Step("Click on login")
