@@ -5,6 +5,7 @@ import io.qameta.allure.Allure;
 import org.testng.annotations.Test;
 import pages.HomePage;
 import pages.LoginPage;
+import pages.ProductListingPage;
 import pages.SearchResults;
 
 import java.util.NoSuchElementException;
@@ -105,18 +106,11 @@ public class RegressionTest extends BaseTest {
         results.verifyPriceRange(50000, 75000);
     }
 
-//    @Test
-//    public void testSortByPriceLowToHigh() {
-//        open("https://www.flipkart.com");
-//        HomePage homePage = new HomePage();
-//        SearchResults results = homePage.search("laptop");
-//
-//        // Click on Sort by "Price -- Low to High"
-//        $x("//div[contains(text(),'Price -- Low to High')]").click();
-//
-//        // Verify sorting indicator is visible
-//        $x("//div[contains(@class,'_10UF8M') and contains(text(),'Price -- Low to High')]")
-//                .shouldBe(visible);
-//    }
+    @Test
+    public void tc08_verifyProductCardsOnPLP() throws InterruptedException {
+        open("https://www.flipkart.com/search?q=iphone");
+        ProductListingPage plp = new ProductListingPage();
+        plp.verifyProductCards();
+    }
 
 }
