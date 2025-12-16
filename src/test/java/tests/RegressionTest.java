@@ -3,10 +3,7 @@ package tests;
 import base.BaseTest;
 import io.qameta.allure.Allure;
 import org.testng.annotations.Test;
-import pages.HomePage;
-import pages.LoginPage;
-import pages.ProductListingPage;
-import pages.SearchResultsPage;
+import pages.*;
 
 import java.util.NoSuchElementException;
 
@@ -138,5 +135,27 @@ public class RegressionTest extends BaseTest {
         HomePage homePage = new HomePage();
         SearchResultsPage results = homePage.search("iphone");
         results.verifyOutOfStockItemsVisible();
+    }
+
+    @Test
+    public void tc12_verifyProductImagesCarousel() throws InterruptedException {
+        open("https://www.flipkart.com");
+        HomePage homePage = new HomePage();
+        SearchResultsPage results = homePage.search("iphone");
+        ProductDetailsPage pdp = results.openFirstProduct();
+        pdp.verifyImageCarouselLoaded();
+        pdp.scrollThroughImages();
+        pdp.verifyImageZoom();
+    }
+
+    @Test
+    public void tc13_verifyProductSpecs() throws InterruptedException {
+        open("https://www.flipkart.com");
+        HomePage homePage = new HomePage();
+        SearchResultsPage results = homePage.search("iPhone 14");
+        results.openFirstProduct();
+        ProductDetailsPage pdp = new ProductDetailsPage();
+        pdp.scrollToSpecifications();
+        pdp.verifyProductSpecificationsVisible();
     }
 }

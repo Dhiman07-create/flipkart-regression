@@ -5,6 +5,7 @@ import com.codeborne.selenide.ElementsCollection;
 import com.codeborne.selenide.SelenideElement;
 import io.qameta.allure.Step;
 import org.openqa.selenium.By;
+import utils.WebBrowserUtils;
 
 import static com.codeborne.selenide.CollectionCondition.sizeGreaterThan;
 import static com.codeborne.selenide.Condition.text;
@@ -83,7 +84,7 @@ public class SearchResultsPage {
         Thread.sleep(2000);
         productPrices
                 .filter(visible)
-                .shouldHave(CollectionCondition.sizeGreaterThan(0));
+                .shouldHave(sizeGreaterThan(0));
         for (String priceText : productPrices.texts()) {
             int value = Integer.parseInt(
                     priceText.replace("₹", "")
@@ -99,7 +100,7 @@ public class SearchResultsPage {
 
     @Step("Verify out-of-stock items are marked on PLP")
     public void verifyOutOfStockItemsVisible() {
-        productCards.shouldHave(CollectionCondition.sizeGreaterThan(0));
+        productCards.shouldHave(sizeGreaterThan(0));
         boolean foundOutOfStock = false;
         for (SelenideElement card : productCards) {
             if (card.$(outOfStockLabel).exists()) {
@@ -110,5 +111,12 @@ public class SearchResultsPage {
         }
         assert foundOutOfStock :
                 "No out-of-stock product found on PLP";
+    }
+
+    @Step("Open first product from search results")
+    public ProductDetailsPage openFirstProduct() {
+        $x("(//div[@data-id])[1]").shouldBe(visible).click();
+        WebBrowserUtils.switchToLastTab();
+        return new ProductDetailsPage();
     }
 }

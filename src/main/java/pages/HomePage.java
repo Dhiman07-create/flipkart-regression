@@ -167,9 +167,9 @@ public class HomePage {
     }
 
     @Step("Open first product from search results")
-    public ProductPage openFirstProduct() {
+    public ProductDetailsPage openFirstProduct() {
         $x("(//div[@data-id])[1]").shouldBe(visible).click();
-        return new ProductPage();
+        return new ProductDetailsPage();
     }
 
     public void clickRandomPoint() {
