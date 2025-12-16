@@ -120,4 +120,15 @@ public class RegressionTest extends BaseTest {
         plp.sortByPriceLowToHigh();
         plp.verifyProductsSortedLowToHigh();
     }
+
+    @Test
+    public void tc10_verifyPaginationNextPageLoadsCorrectly() throws InterruptedException {
+        open("https://www.flipkart.com/search?q=mobile");
+        ProductListingPage plp = new ProductListingPage();
+        int initialProductCount = plp.getProductCount();
+        Thread.sleep(3000);
+        plp.scrollToPagination();
+        plp.clickNextPage();
+        plp.verifyNextPageLoaded(initialProductCount);
+    }
 }

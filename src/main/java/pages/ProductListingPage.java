@@ -9,9 +9,9 @@ import java.util.Collections;
 import java.util.List;
 
 import static com.codeborne.selenide.CollectionCondition.sizeGreaterThan;
+import static com.codeborne.selenide.CollectionCondition.sizeGreaterThanOrEqual;
 import static com.codeborne.selenide.Condition.*;
-import static com.codeborne.selenide.Selenide.$$x;
-import static com.codeborne.selenide.Selenide.$x;
+import static com.codeborne.selenide.Selenide.*;
 
 public class ProductListingPage {
 
@@ -29,6 +29,9 @@ public class ProductListingPage {
             $x("//div[text()='Price -- Low to High']");
     private final ElementsCollection productPrices =
             $$x("//div[@data-id]//div[contains(@class,'hZ3P6w DeU9vF')]");
+
+    private final SelenideElement nextPageButton =
+            $x("//span[text()='Next']");
 
     @Step("Verify product cards contain name, price, rating and image")
     public void verifyProductCards() throws InterruptedException {
@@ -88,5 +91,31 @@ public class ProductListingPage {
         assert actualPrices.equals(sortedPrices)
                 : "Products are NOT sorted Low → High\nActual: "
                 + actualPrices + "\nExpected: " + sortedPrices;
+    }
+
+    @Step("Scroll to pagination section")
+    public void scrollToPagination() {
+        nextPageButton
+                .shouldBe(visible);
+    }
+
+    @Step("Click on Next page button")
+    public void clickNextPage() {
+        nextPageButton.shouldBe(visible, enabled)
+                .shouldBe(visible)
+                .scrollIntoView(true);
+    }
+
+    @Step("Verify next page products are loaded")
+    public void verifyNextPageLoaded(int previousCount) {
+        productCards
+                .shouldHave(sizeGreaterThanOrEqual(previousCount));
+        productCards.first().shouldBe(visible);
+    }
+
+    @Step("Get current product count")
+    public int getProductCount() {
+        productCards.shouldHave(sizeGreaterThan(0));
+        return productCards.size();
     }
 }
