@@ -6,8 +6,7 @@ import io.qameta.allure.Step;
 
 import static com.codeborne.selenide.CollectionCondition.sizeGreaterThan;
 import static com.codeborne.selenide.Condition.*;
-import static com.codeborne.selenide.Selenide.$$;
-import static com.codeborne.selenide.Selenide.$x;
+import static com.codeborne.selenide.Selenide.*;
 
 public class CartPage {
 
@@ -19,6 +18,15 @@ public class CartPage {
 
     private final SelenideElement cartEmptyText =
             $x("//div[contains(text(),'Your cart is empty')]");
+
+    private final SelenideElement cartProductTitle =
+            $x("//div[contains(@class,'PKPqJk')]");
+
+    private final SelenideElement cartProductPrice =
+            $x("//span[contains(@class,'qCly9Z')]");
+
+    private final SelenideElement placeOrderBtn =
+            $x("//span[contains(text(),'Place Order')]");
 
     @Step("Verify product is added to cart")
     public void verifyProductAddedToCart() {
@@ -33,5 +41,17 @@ public class CartPage {
     @Step("Verify cart empty message is shown")
     public void verifyCartIsEmpty() {
         cartEmptyText.shouldBe(visible);
+    }
+
+    public String getCartProductTitle() {
+        return cartProductTitle.shouldBe(visible).getText();
+    }
+
+    public String getCartProductPrice() {
+        return cartProductPrice.shouldBe(visible).getText();
+    }
+
+    public void verifyPlaceOrderButton() {
+        placeOrderBtn.shouldBe(visible, enabled);
     }
 }

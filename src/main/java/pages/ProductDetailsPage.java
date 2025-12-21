@@ -14,10 +14,10 @@ import static com.codeborne.selenide.Selenide.*;
 public class ProductDetailsPage {
 
     private final SelenideElement productTitle =
-            $x("//span[contains(@class,'VU-ZEz')]");
+            $x("//span[contains(@class,'LMizgS')]");
 
     private final SelenideElement addToCartButton =
-            $x("//button[.//span[text()='Add to cart']]");
+            $x("//button[text()='Add to cart']");
 
     private final SelenideElement addToWishlistButton =
             $x("//span[contains(text(),'Wishlist')]");
@@ -45,6 +45,9 @@ public class ProductDetailsPage {
     private final SelenideElement readMore =
             $x("//button[contains(text(),'Read More')]");
 
+    private final SelenideElement productPrice =
+            $x("//div[contains(@class,'hZ3P6w bnqy13')]");
+
     @Step("Scroll to product specifications section")
     public void scrollToSpecifications() {
         specificationsHeader.scrollIntoView(true)
@@ -61,9 +64,14 @@ public class ProductDetailsPage {
         return productTitle.shouldBe(visible).getText();
     }
 
+    @Step("Get product price")
+    public String getProductPrice() {
+        return productPrice.shouldBe(visible).getText();
+    }
+
     @Step("Add product to cart")
-    public void addToCart() {
-        addToCartButton.shouldBe(enabled).click();
+    public void clickAddToCart() {
+        addToCartButton.shouldBe(visible, enabled).click();
     }
 
     @Step("Click Add to Wishlist")

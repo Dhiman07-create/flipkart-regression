@@ -2,6 +2,7 @@ package tests;
 
 import base.BaseTest;
 import io.qameta.allure.Allure;
+import org.testng.Assert;
 import org.testng.annotations.Test;
 import pages.*;
 
@@ -157,5 +158,31 @@ public class RegressionTest extends BaseTest {
         ProductDetailsPage pdp = new ProductDetailsPage();
         pdp.scrollToSpecifications();
         pdp.verifyProductSpecificationsVisible();
+    }
+
+    @Test(description = "Verify Add to Cart from PDP and checkout flow")
+    public void tc14_addToCartFromPDPTest() {
+        open("https://www.flipkart.com");
+        HomePage homePage = new HomePage();
+        SearchResultsPage results = homePage.search("iPhone 17 Pro Max");
+        results.openFirstProduct();
+        ProductDetailsPage pdp = new ProductDetailsPage();
+        String expectedTitle = pdp.getProductTitle();
+        String expectedPrice = pdp.getProductPrice();
+        pdp.clickAddToCart();
+        CartPage cart = new CartPage();
+        Assert.assertEquals(
+                cart.getCartProductTitle(),
+                expectedTitle,
+                "Incorrect product added to cart"
+        );
+        Assert.assertTrue(
+                cart.getCartProductPrice().contains(expectedPrice),
+                "Price mismatch in cart"
+        );
+        cart.verifyPlaceOrderButton();
+        cart.clickPlaceOrder();
+        CheckoutPage checkout = new CheckoutPage();
+        checkout.verifyCheckoutPage();
     }
 }
