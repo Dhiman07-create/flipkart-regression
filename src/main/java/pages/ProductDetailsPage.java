@@ -96,6 +96,7 @@ public class ProductDetailsPage {
     @Step("Verify zoom functionality on product image")
     public void verifyImageZoom() {
         mainImage.hover();
+        sleep(3000);
         zoomContainer.shouldBe(visible, Duration.ofSeconds(10));
     }
 

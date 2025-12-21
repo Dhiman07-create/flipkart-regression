@@ -102,6 +102,7 @@ public class SearchResultsPage {
 
     @Step("Verify out-of-stock items are marked on PLP")
     public void verifyOutOfStockItemsVisible() {
+        sleep(2000);
         productCards.shouldHave(sizeGreaterThan(0));
         boolean foundOutOfStock = false;
         for (SelenideElement card : productCards) {
