@@ -185,4 +185,16 @@ public class RegressionTest extends BaseTest {
         CheckoutPage checkout = new CheckoutPage();
         checkout.verifyCheckoutPage();
     }
+
+    @Test(description = "Buy Now flow")
+    public void tc15_buyNowTest() {
+        open("https://www.flipkart.com");
+        HomePage homePage = new HomePage();
+        SearchResultsPage results = homePage.search("iPhone 17 Pro Max");
+        results.openFirstProduct();
+        ProductDetailsPage pdp = new ProductDetailsPage();
+        pdp.clickBuyNow();
+        CheckoutPage checkout = new CheckoutPage();
+        checkout.verifyCheckoutPage();
+    }
 }

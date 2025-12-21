@@ -1,6 +1,7 @@
 package pages;
 
 import com.codeborne.selenide.SelenideElement;
+import io.qameta.allure.Step;
 
 import static com.codeborne.selenide.Condition.text;
 import static com.codeborne.selenide.Condition.visible;
@@ -20,6 +21,7 @@ public class CheckoutPage {
     private final SelenideElement paymentOptionsHeader =
             $x("//span[contains(text(),'Payment Options')]");
 
+    @Step("Verify Checkout page headers like login, oder summary etc..")
     public void verifyCheckoutPage() {
         loginHeader.shouldBe(visible)
                 .shouldHave(text("Login"));

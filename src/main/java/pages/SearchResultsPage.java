@@ -48,12 +48,12 @@ public class SearchResultsPage {
     private final By outOfStockLabel =
             By.xpath(".//*[contains(text(),'Out of Stock') or contains(text(),'Currently unavailable')]");
 
-    @Step()
+    @Step("Verify results contain the mentioned string")
     public void verifyResultsContain(String keyword) {
         $$(".RG5Slk").filterBy(text(keyword)).first().shouldBe(visible);
     }
 
-    @Step()
+    @Step("Verify results contain smart suggestions")
     public void verifySmartSuggestionAlt() {
         smartSuggestion.shouldBe(visible);
     }

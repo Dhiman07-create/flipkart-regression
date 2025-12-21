@@ -43,14 +43,17 @@ public class CartPage {
         cartEmptyText.shouldBe(visible);
     }
 
+    @Step("Verify product title in cart")
     public String getCartProductTitle() {
         return cartProductTitle.shouldBe(visible).getText();
     }
 
+    @Step("Verify product price in cart")
     public String getCartProductPrice() {
         return cartProductPrice.shouldBe(visible).getText();
     }
 
+    @Step("Verify visibility of place order button")
     public void verifyPlaceOrderButton() {
         placeOrderBtn.shouldBe(visible, enabled);
     }

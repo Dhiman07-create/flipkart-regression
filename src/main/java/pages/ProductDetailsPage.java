@@ -19,6 +19,9 @@ public class ProductDetailsPage {
     private final SelenideElement addToCartButton =
             $x("//button[text()='Add to cart']");
 
+    private final SelenideElement buyNowButton =
+            $x("//button[text()='Buy Now']");
+
     private final SelenideElement addToWishlistButton =
             $x("//span[contains(text(),'Wishlist')]");
 
@@ -72,6 +75,11 @@ public class ProductDetailsPage {
     @Step("Add product to cart")
     public void clickAddToCart() {
         addToCartButton.shouldBe(visible, enabled).click();
+    }
+
+    @Step("Buy Now")
+    public void clickBuyNow() {
+        buyNowButton.shouldBe(visible, enabled).click();
     }
 
     @Step("Click Add to Wishlist")
