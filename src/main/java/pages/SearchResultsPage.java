@@ -7,6 +7,8 @@ import io.qameta.allure.Step;
 import org.openqa.selenium.By;
 import utils.WebBrowserUtils;
 
+import java.time.Duration;
+
 import static com.codeborne.selenide.CollectionCondition.sizeGreaterThan;
 import static com.codeborne.selenide.Condition.text;
 import static com.codeborne.selenide.Condition.visible;
@@ -60,7 +62,7 @@ public class SearchResultsPage {
     public void applyBrandFilter() {
         brandDropdown.shouldBe(visible).click();
         brandResultExpand.shouldBe(visible).click();
-        brandFilterHP.shouldBe(visible).click();
+        brandFilterHP.shouldBe(visible, Duration.ofSeconds(5)).click();
         sleep(3000); // wait for filter to apply
     }
 
