@@ -152,7 +152,7 @@ After execution, an automated email is sent containing:
 
 <img width="1159" height="731" alt="image" src="https://github.com/user-attachments/assets/13dee4e1-be50-47ed-b6f3-4bed50767077" />
 
-### 📌 Sample Error Messages For Failed Testcases
+### 📌 Sample Error Messages for Failed Testcases
 
 ![img_1.png](img_1.png)
 
