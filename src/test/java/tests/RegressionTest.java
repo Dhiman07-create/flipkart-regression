@@ -160,7 +160,7 @@ public class RegressionTest extends BaseTest {
         pdp.verifyProductSpecificationsVisible();
     }
 
-    @Test(description = "Verify Add to Cart from PDP and checkout flow")
+    @Test()
     public void tc14_addToCartFromPDPTest() {
         open("https://www.flipkart.com");
         HomePage homePage = new HomePage();
@@ -186,7 +186,7 @@ public class RegressionTest extends BaseTest {
         checkout.verifyCheckoutPage();
     }
 
-    @Test(description = "Buy Now flow")
+    @Test()
     public void tc15_buyNowTest() {
         open("https://www.flipkart.com");
         HomePage homePage = new HomePage();
