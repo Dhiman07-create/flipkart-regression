@@ -98,6 +98,7 @@ The framework integrates **Allure Reports** to provide:
 <img width="1919" height="861" alt="image" src="https://github.com/user-attachments/assets/65bfa33e-989f-442d-8787-e218715d705f" />
 
 ### 📌 Failure Screenshot Attachment
+![img.png](img.png)
 (Attached automatically when a test fails)
 
 ### 📈 Test Result Visualization
@@ -126,9 +127,6 @@ Triggered on:
 - Sends email notifications with execution details
 
 ### 📌 Workflow Diagram
-
-(Optional visual to add)
-
 ```
 Code Push / Schedule
         ↓
@@ -147,11 +145,16 @@ After execution, an automated email is sent containing:
 - Execution status
 - Total / Passed / Failed tests
 - Allure report link
+- GitHub action link
+- Error messages for failed testcases
 
 ### 📌 Sample Email Screenshot
 
 <img width="1159" height="731" alt="image" src="https://github.com/user-attachments/assets/13dee4e1-be50-47ed-b6f3-4bed50767077" />
 
+### 📌 Sample Error Messages for failed testcases
+
+![img_1.png](img_1.png)
 
 ## 🏃 How to Run Tests Locally
 
