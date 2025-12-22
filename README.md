@@ -161,12 +161,14 @@ After execution, an automated email is sent containing:
 - Chrome browser 
 
 ### Run all tests
-
-`mvn clean test`
+```
+mvn clean test
+```
 
 ### Generate Allure report
-
-`allure serve target/allure-results`
+```
+allure serve target/allure-results
+```
 
 ### ⚙️ Environment Handling
 
