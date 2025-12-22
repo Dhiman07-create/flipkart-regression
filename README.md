@@ -19,14 +19,14 @@ The project is designed to mirror real-world SDET practices, making it suitable 
 
 ## 🎯 Key Highlights
 
-- **✅ Page Object Model (POM)**
-- **✅ Selenide-based stable UI automation**
-- **✅ TestNG test orchestration**
-- **✅ Allure rich reporting with screenshots**
-- **✅ GitHub Actions CI/CD integration**
-- **✅ Email notifications with execution summary**
-- **✅ Headless & local execution support**
-- **✅ Failure screenshots attached to reports**
+**✅ Page Object Model (POM)**<br>
+**✅ Selenide-based stable UI automation**<br>
+**✅ TestNG test orchestration**<br>
+**✅ Allure rich reporting with screenshots**<br>
+**✅ GitHub Actions CI/CD integration**<br>
+**✅ Email notifications with execution summary**<br>
+**✅ Headless & local execution support**<br>
+**✅ Failure screenshots attached to reports**<br>
 
 ## 🧱 Tech Stack
 
@@ -95,10 +95,10 @@ The framework integrates **Allure Reports** to provide:
 
 ### 📌 Sample Allure Dashboard
 
-<img width="1919" height="861" alt="image" src="https://github.com/user-attachments/assets/65bfa33e-989f-442d-8787-e218715d705f" />
+![img_4.png](img_4.png)
 
 ### 📌 Failure Screenshot Attachment
-![img.png](img.png)
+![img_2.png](img_2.png)
 (Attached automatically when a test fails)
 
 ### 📈 Test Result Visualization
@@ -110,7 +110,7 @@ The CI pipeline generates pictorial test result representation in the form of a 
 
 ### 📌 Pie Chart Example
 
-<img width="832" height="301" alt="image" src="https://github.com/user-attachments/assets/79e80266-cf0b-468c-b705-73fee7a102ed" />
+![img_3.png](img_3.png)
 
 ## 🔁 CI/CD Pipeline (GitHub Actions)
 
@@ -150,7 +150,7 @@ After execution, an automated email is sent containing:
 
 ### 📌 Sample Email Screenshot
 
-<img width="1159" height="731" alt="image" src="https://github.com/user-attachments/assets/13dee4e1-be50-47ed-b6f3-4bed50767077" />
+![img_5.png](img_5.png)
 
 ### 📌 Sample Error Messages for Failed Testcases
 
