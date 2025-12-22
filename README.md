@@ -1,55 +1,49 @@
-🛒 Flipkart End-to-End Automation Testing Framework
+# 🛒 Flipkart End-to-End Automation Testing Framework
 
 
-📌 Project Overview
+## 📌 Project Overview
 
-This repository contains a scalable, CI/CD-ready end-to-end test automation framework built for the Flipkart e-commerce platform.
+This repository contains a **scalable, CI/CD-ready end-to-end test automation framework** built for the **Flipkart e-commerce web platform**.
 
 The framework automates critical user journeys such as:
-
-Product search
-
-Product details validation (PDP)
-
-Image carousel & zoom
-
-Add to cart
-
-Checkout flow validation
-
-Login / Address / Payment screen verification
+- **Product search**
+- **Product details validation (PDP)**
+- **Image carousel & zoom**
+- **Add to cart**
+- **Checkout flow validation**
+- **Login / Address / Payment screen verification**
 
 The project is designed to mirror real-world SDET practices, making it suitable for:
+- **Enterprise regression testing**
+- **CI/CD pipelines**
 
-Enterprise regression testing
+## 🎯 Key Highlights
 
-CI/CD pipelines
+- **✅ Page Object Model (POM)**
+- **✅ Selenide-based stable UI automation**
+- **✅ TestNG test orchestration**
+- **✅ Allure rich reporting with screenshots**
+- **✅ GitHub Actions CI/CD integration**
+- **✅ Email notifications with execution summary**
+- **✅ Headless & local execution support**
+- **✅ Failure screenshots attached to reports**
 
-Interview demonstrations
+## 🧱 Tech Stack
 
-Portfolio showcasing
+| **Layer**       | **Technology**      |
+|-----------------|---------------------|
+| Language        | Java 17             |
+| UI Automation   | Selenium + Selenide |
+| Test Framework  | TestNG              |
+| Build Tool      | Maven               |
+| Reporting       | Allure              |
+| CI/CD           | GitHub Actions      |
+| Version Control | GitHub              |
 
-🎯 Key Highlights
 
-✅ Page Object Model (POM)
-✅ Selenide-based stable UI automation
-✅ TestNG test orchestration
-✅ Allure rich reporting with screenshots
-✅ GitHub Actions CI/CD integration
-✅ Email notifications with execution summary
-✅ Headless & local execution support
-✅ Failure screenshots attached to reports
+## 🗂️ Project Structure
 
-🧱 Tech Stack
-Layer	Technology
-Language	Java 17
-UI Automation	Selenium + Selenide
-Test Framework	TestNG
-Build Tool	Maven
-Reporting	Allure
-CI/CD	GitHub Actions
-Version Control	GitHub
-🗂️ Project Structure
+```
 flipkart-automation/
 │
 ├── src/test/java
@@ -67,106 +61,75 @@ flipkart-automation/
 │
 ├── pom.xml
 └── README.md
+```
 
-🧪 Automated Test Scenarios Covered
-🔹 Product Discovery
+## 🧪 Automated Test Scenarios Covered
 
-Search product from homepage
+### 🔹 Product Discovery
+- Search product from homepage
+- Validate search results
+- Open product details page (PDP)
 
-Validate search results
+### 🔹 Product Details Page (PDP)
+- Verify product title & price
+- Validate image carousel
+- Hover-based image zoom (environment aware)
 
-Open product details page (PDP)
+### 🔹 Cart & Checkout
+- Add product to cart
+- Verify correct product & price in cart
+- Validate “Place Order” CTA
+- Verify checkout screens:
+  - Login / Signup
+  - Delivery Address
+  - Order Summary
+  - Payment Options
 
-🔹 Product Details Page (PDP)
+## 📊 Allure Reporting
 
-Verify product title & price
+The framework integrates **Allure Reports** to provide:
+- Test execution summary
+- Step-wise execution logs
+- Screenshots on failure
+- Pie chart visualization of results
 
-Validate image carousel
-
-Hover-based image zoom (environment aware)
-
-🔹 Cart & Checkout
-
-Add product to cart
-
-Verify correct product & price in cart
-
-Validate “Place Order” CTA
-
-Verify checkout screens:
-
-Login / Signup
-
-Delivery Address
-
-Order Summary
-
-Payment Options
-
-📊 Allure Reporting
-
-The framework integrates Allure Reports to provide:
-
-Test execution summary
-
-Step-wise execution logs
-
-Screenshots on failure
-
-Pie chart visualization of results
-
-📌 Sample Allure Dashboard
-
-(Attach screenshot here)
+### 📌 Sample Allure Dashboard
 
 <img width="1919" height="861" alt="image" src="https://github.com/user-attachments/assets/65bfa33e-989f-442d-8787-e218715d705f" />
-📷 
 
-📌 Failure Screenshot Attachment
-
+### 📌 Failure Screenshot Attachment
 (Attached automatically when a test fails)
 
-📷 failure-screenshot.png
+### 📈 Test Result Visualization
+The CI pipeline generates pictorial test result representation in the form of a Pie Chart, and also includes:
 
-📈 Test Result Visualization
+- Pass / Fail / Skip ratio
+- Execution trends
+- Failure screenshots embedded in Allure
 
-The CI pipeline generates pictorial test result representation, including:
-
-Pass / Fail / Skip ratio
-
-Execution trends
-
-Failure screenshots embedded in Allure
-
-📌 Pie Chart Example
-
-(Attach screenshot here)
+### 📌 Pie Chart Example
 
 <img width="832" height="301" alt="image" src="https://github.com/user-attachments/assets/79e80266-cf0b-468c-b705-73fee7a102ed" />
-📷 
 
-🔁 CI/CD Pipeline (GitHub Actions)
+## 🔁 CI/CD Pipeline (GitHub Actions)
 
 This project is fully CI/CD enabled using GitHub Actions.
 
-🔹 Pipeline Capabilities
+### 🔹 Pipeline Capabilities
 
 Triggered on:
 
-Manual workflow dispatch
+- Manual workflow dispatch
+- Scheduled cron runs
+- Executes tests in headless mode
+- Generates Allure reports
+- Sends email notifications with execution details
 
-Scheduled cron runs
-
-Executes tests in headless mode
-
-Generates Allure reports
-
-Sends email notifications with execution details
-
-📌 Workflow Diagram
+### 📌 Workflow Diagram
 
 (Optional visual to add)
 
+```
 Code Push / Schedule
         ↓
 GitHub Actions Runner
@@ -176,82 +139,66 @@ Run TestNG Suite
 Generate Allure Report
         ↓
 Email Notification
+```
 
-📧 Email Notification (CI Execution)
+### 📧 Email Notification (CI Execution)
 
 After execution, an automated email is sent containing:
+- Execution status
+- Total / Passed / Failed tests
+- Allure report link
 
-Execution status
+### 📌 Sample Email Screenshot
 
-Total / Passed / Failed tests
-
-Allure report link
-
-Failure screenshots (if any)
-
-📌 Sample Email Screenshot
-
-📷
 <img width="1159" height="731" alt="image" src="https://github.com/user-attachments/assets/13dee4e1-be50-47ed-b6f3-4bed50767077" />
 
 
-🏃 How to Run Tests Locally
-Prerequisites
+## 🏃 How to Run Tests Locally
 
-Java 17+
+### Prerequisites
+- Java 17+
+- Maven
+- Chrome browser 
 
-Maven
+### Run all tests
 
-Chrome browser
+`mvn clean test`
 
-Run all tests
-mvn clean test
+### Generate Allure report
 
-Generate Allure report
-allure serve target/allure-results
+`allure serve target/allure-results`
 
-⚙️ Environment Handling
+### ⚙️ Environment Handling
 
-The framework intelligently handles:
+* The framework intelligently handles:
+* Local execution (full UI features)
+* CI execution (headless limitations)
+* Hover-based features (like image zoom) are environment-aware to avoid false CI failures.
 
-Local execution (full UI features)
+### 🧠 Design Decisions & Best Practices
 
-CI execution (headless limitations)
+* Selenide chosen for stability and auto-waits
+* Conditional UI validation to support headless CI
+* Page Object Model for maintainability
+* Non-flaky assertions for real-world reliability
+* Failure screenshots for faster debugging
 
-Hover-based features (like image zoom) are environment-aware to avoid false CI failures.
+### 🚀 Future Enhancements
 
-🧠 Design Decisions & Best Practices
+* Cross-browser execution
+* Parallel test execution
+* Dockerized test runs
+* API + UI hybrid flows
+* Test data externalization
 
-Selenide chosen for stability and auto-waits
+### 👤 Author
 
-Conditional UI validation to support headless CI
+**Dhiman Dasgupta <br>
+SDET | Automation Engineer**
 
-Page Object Model for maintainability
+🔗 GitHub: https://github.com/Dhiman07-create <br>
+🔗 LinkedIn: https://www.linkedin.com/in/dhiman-dasgupta-aa3b21197/
 
-Non-flaky assertions for real-world reliability
+### ⭐ Why This Project Stands Out
 
-Failure screenshots for faster debugging
-
-🚀 Future Enhancements
-
-Cross-browser execution
-
-Parallel test execution
-
-Dockerized test runs
-
-API + UI hybrid flows
-
-Test data externalization
-
-👤 Author
-
-Dhiman Dasgupta
-SDET | Automation Engineer
-
-🔗 GitHub: [Your GitHub Profile]
-🔗 LinkedIn: [Your LinkedIn Profile]
-
-⭐ Why This Project Stands Out
-
-This framework is built not just to pass tests, but to demonstrate real SDET engineering practices, CI/CD maturity, and production-grade automation design.
+This framework is built not just to pass tests, but to demonstrate real **SDET engineering practices, CI/CD maturity, and production-grade automation design**.
