@@ -49,7 +49,7 @@ public class ProductDetailsPage {
             $x("//button[contains(text(),'Read More')]");
 
     private final SelenideElement productPrice =
-            $x("//div[contains(@class,'hZ3P6w bnqy13')]");
+            $x("//div[contains(@class,'hZ3P6w bnqy1')]");
 
     @Step("Scroll to product specifications section")
     public void scrollToSpecifications() {
