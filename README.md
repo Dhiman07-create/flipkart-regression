@@ -46,21 +46,59 @@ The project is designed to mirror real-world SDET practices, making it suitable 
 ```
 flipkart-automation/
 │
-├── src/test/java
-│   ├── pages/               # Page Object classes
-│   ├── tests/               # TestNG test classes
-│   ├── utils/               # Utilities & helpers
-│   └── base/                # Base test & config
+├── .github/
+│   └── workflows/
+│       └── flipkart-regression.yml      # GitHub Actions CI/CD pipeline
 │
-├── src/test/resources
-│   ├── testng.xml
-│   └── allure.properties
+├── src/
+│   ├── main/
+│   │   └── java/
+│   │       └── config/
+│   │           └── ConfigReader.java    # Environment/config reader
+│   │
+│   └── test/
+│       ├── java/
+│       │   ├── base/
+│       │   │   ├── BaseTest.java         # Browser & test setup
+│       │   │   └── TestListener.java     # TestNG + Allure listener
+│       │   │
+│       │   ├── pages/
+│       │   │   ├── HomePage.java
+│       │   │   ├── SearchResultsPage.java
+│       │   │   ├── ProductDetailsPage.java
+│       │   │   ├── CartPage.java
+│       │   │   └── CheckoutPage.java
+│       │   │
+│       │   ├── tests/
+│       │   │   ├── SearchTest.java
+│       │   │   ├── ProductDetailsTest.java
+│       │   │   ├── AddToCartTest.java
+│       │   │   └── CheckoutTest.java
+│       │   │
+│       │   ├── utils/
+│       │   │   ├── BrowserUtils.java     # Window/tab handling
+│       │   │   ├── ScreenshotUtil.java   # Failure screenshots
+│       │   │   ├── EmailUtil.java        # CI email notifications
+│       │   │   └── AllureUtil.java       # Allure attachments
+│       │   │
+│       │   └── constants/
+│       │       └── AppConstants.java     # URLs, timeouts, messages
+│       │
+│       └── resources/
+│           ├── testng.xml                # Test suite config
+│           ├── allure.properties         # Allure configuration
+│           ├── log4j2.xml                # Logging configuration
+│           └── config.properties         # Env-specific values
 │
-├── .github/workflows
-│   └── regression-pipeline.yml
+├── reports/
+│   └── allure-results/                  # Generated during execution
 │
-├── pom.xml
-└── README.md
+├── screenshots/
+│   └── failures/                        # Screenshots on failure
+│
+├── pom.xml                              # Maven dependencies
+├── README.md                            # Project documentation
+└── .gitignore
 ```
 
 ## 🧪 Automated Test Scenarios Covered
