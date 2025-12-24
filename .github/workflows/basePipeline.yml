@@ -6,7 +6,7 @@ on:
       ENV:
         required: false
         type: string
-        default: 'DEV'
+        default: 'PROD'
       THREADS:
         required: true
         type: string
