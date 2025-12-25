@@ -240,7 +240,7 @@ allure serve target/allure-results
 SDET | Automation Engineer**
 
 🔗 GitHub: https://github.com/Dhiman07-create <br>
-🔗 LinkedIn: https://www.linkedin.com/in/dhiman-dasgupta-aa3b21197/
+🔗 LinkedIn: https://www.linkedin.com/in/dhiman-dasgupta/
 
 ### ⭐ Why This Project Stands Out
 
