@@ -133,10 +133,10 @@ The framework integrates **Allure Reports** to provide:
 
 ### 📌 Sample Allure Dashboard
 
-![img_4.png](img_4.png)
+![img_4.png](images/img_4.png)
 
 ### 📌 Failure Screenshot Attachment
-![img_2.png](img_2.png)
+![img_2.png](images/img_2.png)
 (Attached automatically when a test fails)
 
 ### 📈 Test Result Visualization
@@ -148,7 +148,7 @@ The CI pipeline generates pictorial test result representation in the form of a 
 
 ### 📌 Pie Chart Example
 
-![img_3.png](img_3.png)
+![img_3.png](images/img_3.png)
 
 ## 🔁 CI/CD Pipeline (GitHub Actions)
 
@@ -188,11 +188,11 @@ After execution, an automated email is sent containing:
 
 ### 📌 Sample Email Screenshot
 
-![img_5.png](img_5.png)
+![img_5.png](images/img_5.png)
 
 ### 📌 Sample Error Messages for Failed Testcases
 
-![img_1.png](img_1.png)
+![img_1.png](images/img_1.png)
 
 ## 🏃 How to Run Tests Locally
 
